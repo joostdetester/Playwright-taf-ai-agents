@@ -79,7 +79,7 @@ jobs:
           echo "::notice title=Allure report::Open run artifacts: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts (artifact name: allure-report)"
 
   deploy-allure:
-    if: always() && github.ref == 'refs/heads/main'
+    if: always() && github.ref == 'refs/heads/main' && github.event.repository.private == false
     needs: test
     runs-on: ubuntu-latest
     environment:
