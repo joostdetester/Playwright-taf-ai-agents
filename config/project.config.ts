@@ -2,9 +2,31 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
 import path from 'path';
+import fs from 'fs';
 
 // Load .env from project root (ignored by git)
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+// During local development (not CI), also attempt to load
+// .vscode/.env.agents for MCP-related secrets and overrides.
+// We only set variables that are not already present to avoid
+// unintentionally overwriting environment-provided secrets.
+try {
+  if (!process.env.CI) {
+    const agentsEnvPath = path.resolve(process.cwd(), '.vscode', '.env.agents');
+    if (fs.existsSync(agentsEnvPath)) {
+      const file = fs.readFileSync(agentsEnvPath, 'utf8');
+      const parsed = dotenv.parse(file);
+      for (const key of Object.keys(parsed)) {
+        if (process.env[key] === undefined) {
+          process.env[key] = parsed[key];
+        }
+      }
+    }
+  }
+} catch (err) {
+  // Fail silently — loading local env is convenience only.
+}
 
 // Schema: keep BASE_URL required for real runs, others optional
 const schema = z.object({
