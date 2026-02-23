@@ -17,6 +17,12 @@ npx playwright install
 npm run bdd
 ```
 
+- Run the dummy CI suite locally:
+
+```bash
+npm run bdd:dummy
+```
+
 How it works
 - Feature files: `features/**.feature`
 - Generation: `npx bddgen` generates Playwright tests from feature files (configured in `playwright.config.ts` using `defineBddConfig`).
@@ -39,3 +45,7 @@ MCP agents
 
 Security
 - Keep secrets out of the repo. Use `.env` locally and set secrets in CI provider.
+
+CI
+- GitHub Actions (`.github/workflows/ci.yml`) runs on pushes/PRs to `main`.
+- It executes `npm run bdd:dummy` and spins up a temporary MySQL service for DB feature tests.

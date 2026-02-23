@@ -12,6 +12,7 @@ const schema = z.object({
   API_BASE_URL: z.string().url().optional(),
   MCP_ENABLED: z.string().optional(),
   DB_HOST: z.string().optional(),
+  DB_PORT: z.string().optional(),
   DB_USER: z.string().optional(),
   DB_PASSWORD: z.string().optional(),
   DB_NAME: z.string().optional(),
@@ -27,6 +28,7 @@ const envData = parsed.success
       API_BASE_URL: process.env.API_BASE_URL,
       MCP_ENABLED: process.env.MCP_ENABLED,
       DB_HOST: process.env.DB_HOST,
+      DB_PORT: process.env.DB_PORT,
       DB_USER: process.env.DB_USER,
       DB_PASSWORD: process.env.DB_PASSWORD,
       DB_NAME: process.env.DB_NAME,
@@ -46,6 +48,7 @@ export const projectConfig = {
   mcpEnabled: envData.MCP_ENABLED !== 'false',
   db: {
     host: envData.DB_HOST,
+    port: envData.DB_PORT,
     user: envData.DB_USER,
     password: envData.DB_PASSWORD,
     name: envData.DB_NAME,

@@ -10,10 +10,24 @@ let rows: any[] = [];
 Given('the database is available', async function () {
   connection = await mysql.createConnection({
     host: projectConfig.db.host,
+    port: projectConfig.db.port ? Number(projectConfig.db.port) : undefined,
     user: projectConfig.db.user,
     password: projectConfig.db.password,
     database: projectConfig.db.name,
   });
+
+  await connection.execute(`
+    CREATE TABLE IF NOT EXISTS books (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      author VARCHAR(255) NOT NULL,
+      published_year INT NOT NULL
+    )
+  `);
+
+  await connection.execute(
+    `DELETE FROM books WHERE author = 'BDD Author'`
+  );
 
   const [result] = await connection.execute('SELECT 1 as ok');
   expect((result as any[])[0].ok).toBe(1);
