@@ -3,6 +3,7 @@ import { Given, When, Then } from '../bdd';
 import { expect } from '@playwright/test';
 import mysql from 'mysql2/promise';
 import { projectConfig } from '../../config/project.config';
+import { World } from '../world';
 
 let connection: mysql.Connection;
 let rows: any[] = [];
@@ -49,4 +50,60 @@ Then('I can read the books from the database', async function () {
 
   rows = result as any[];
   expect(rows.length).toBeGreaterThan(0);
+});
+
+Given('the database contains books by {string}', async ({ world }, author: string) => {
+  const connection = await mysql.createConnection({
+    host: projectConfig.db.host,
+    port: projectConfig.db.port ? Number(projectConfig.db.port) : undefined,
+    user: projectConfig.db.user,
+    password: projectConfig.db.password,
+    database: projectConfig.db.name,
+  });
+
+  // Try to read existing books for the author
+  let [rows] = await connection.execute(
+    `
+    SELECT *
+    FROM books
+    WHERE author = ?
+    `,
+    [author]
+  );
+
+  world.dbBooks = (rows as any[]) || [];
+
+  // If none found, insert a couple of sample rows and re-query
+  if (!world.dbBooks.length) {
+    await connection.execute(
+      `
+      INSERT INTO books (title, author, published_year)
+      VALUES
+        (?, ?, ?),
+        (?, ?, ?)
+      `,
+      [
+        `${author} Book 1`, author, new Date().getFullYear(),
+        `${author} Book 2`, author, new Date().getFullYear() - 1,
+      ]
+    );
+
+    const [newRows] = await connection.execute(
+      `
+      SELECT *
+      FROM books
+      WHERE author = ?
+      `,
+      [author]
+    );
+
+    world.dbBooks = (newRows as any[]) || [];
+  }
+
+  if (!world.dbBooks.length) {
+    await connection.end();
+    throw new Error(`No books found in DB for author "${author}" after seeding`);
+  }
+
+  await connection.end();
 });
