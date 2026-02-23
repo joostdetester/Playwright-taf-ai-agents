@@ -6,7 +6,7 @@
     "bddgen": "npx bddgen",
     "test": "npm run bdd",
     "bdd": "npm run bddgen && npx playwright test --reporter=list,allure-playwright",
-    "bdd:dummy": "npm run bdd -- features/api/dummy-api.feature features/ui/dummy-ui.feature features/db/dummy-db.feature",
+    "bdd:dummy": "npm run bdd -- features/api/dummy-api.feature features/ui/dummy-ui.feature features/db/dummy-db.feature features/api/dummy-e2e.feature",
     "allure:generate": "allure generate allure-results --clean -o allure-report || true",
     "allure:open": "allure open allure-report || true"
   },
