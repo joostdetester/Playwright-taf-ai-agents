@@ -44,6 +44,18 @@ jobs:
           DB_NAME: rahulshettyacademy
         run: |
           npm run bdd:dummy
+      - name: Generate Allure report
+        if: always()
+        run: |
+          npm run allure:generate
+      - name: Upload Allure report
+        if: always()
+        id: upload-allure
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+          if-no-files-found: warn
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,3 +65,10 @@ jobs:
             allure-results
             test-results
             playwright-report
+      - name: Add report links to summary
+        if: always()
+        run: |
+          echo "## Test report links" >> $GITHUB_STEP_SUMMARY
+          echo "- [Artifacts for this run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)" >> $GITHUB_STEP_SUMMARY
+          echo "- Allure artifact: **allure-report**" >> $GITHUB_STEP_SUMMARY
+          echo "::notice title=Allure report::Open run artifacts: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts (artifact name: allure-report)"
