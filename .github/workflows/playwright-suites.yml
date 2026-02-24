@@ -1,0 +1,104 @@
+name: Playwright Suites
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  run-suite:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - suite: petstore
+            tag: '@petstore'
+          - suite: api
+            tag: '@api'
+          - suite: e2e
+            tag: '@e2e'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests for suite
+        run: |
+          echo "Running suite=${{ matrix.suite }} tag=${{ matrix.tag }}"
+          npx playwright test --grep "${{ matrix.tag }}" --reporter=list,allure-playwright || true
+
+      - name: Generate summary JSON
+        run: |
+          node scripts/generate-summary.js --suite=${{ matrix.suite }} --out=summary-${{ matrix.suite }}.json || true
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-${{ matrix.suite }}
+          path: allure-results
+
+      - name: Upload summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: summary-${{ matrix.suite }}
+          path: summary-${{ matrix.suite }}.json
+
+  publish-dashboard:
+    name: Publish dashboard to GitHub Pages
+    needs: run-suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download petstore summary
+        uses: actions/download-artifact@v4
+        with:
+          name: summary-petstore
+          path: artifacts || true
+
+      - name: Download api summary
+        uses: actions/download-artifact@v4
+        with:
+          name: summary-api
+          path: artifacts || true
+
+      - name: Download e2e summary
+        uses: actions/download-artifact@v4
+        with:
+          name: summary-e2e
+          path: artifacts || true
+
+      - name: Prepare site folder
+        run: |
+          mkdir -p site
+          mkdir -p site/data
+          if [ -d artifacts/summary-petstore ]; then cp artifacts/summary-petstore/* site/; fi
+          if [ -d artifacts/summary-api ]; then cp artifacts/summary-api/* site/; fi
+          if [ -d artifacts/summary-e2e ]; then cp artifacts/summary-e2e/* site/; fi
+          cp -R dashboard/* site/ || true
+
+      - name: Publish to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            git fetch origin gh-pages:gh-pages
+            git checkout gh-pages
+            git rm -rf . || true
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . || true
+          fi
+          cp -R site/* .
+          git add -A
+          git commit -m "Update dashboard from workflow $GITHUB_RUN_ID" || echo "No changes to commit"
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} gh-pages --force
