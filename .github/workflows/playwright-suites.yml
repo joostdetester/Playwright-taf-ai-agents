@@ -58,11 +58,31 @@ jobs:
       - name: Run tests for suite
         run: |
           echo "Running suite=${{ matrix.suite }} tag=${{ matrix.tag }}"
-          npx playwright test --grep "${{ matrix.tag }}" --reporter=list,allure-playwright || true
+          # Generate BDD tests and run Playwright with the requested tag
+          npm run bdd -- --grep="${{ matrix.tag }}" || true
 
       - name: Generate summary JSON
         run: |
           node scripts/generate-summary.js --suite=${{ matrix.suite }} --out=summary-${{ matrix.suite }}.json || true
+
+      - name: Install Allure CLI
+        run: |
+          npm install -g allure-commandline@2.13.0 || true
+
+      - name: Generate Allure HTML report (if results present)
+        run: |
+          if [ -d "allure-results" ]; then
+            npx allure generate allure-results -o allure-report || true
+          else
+            echo "no allure-results dir"
+          fi
+
+      - name: Upload Allure HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-${{ matrix.suite }}
+          path: allure-report
 
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
@@ -94,7 +114,7 @@ jobs:
           echo "Querying $API_URL"
           artifacts_json=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "$API_URL")
           echo "$artifacts_json" > artifacts/list.json
-          ids=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name | test("^summary-")) | "\(.id):\(.name)"') || true
+          ids=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name | test("^(summary-|allure-html-)")) | "\(.id):\(.name)"') || true
           if [ -z "$ids" ]; then
             echo "No summary-* artifacts found"
           else
@@ -104,6 +124,11 @@ jobs:
               echo "Downloading artifact id=$id name=$name"
               curl -s -L -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" -o "/tmp/${name}.zip"
               unzip -o "/tmp/${name}.zip" -d "artifacts/${name}" || true
+              # If this is an allure-html artifact, move its contents into a folder we can serve
+              if echo "$name" | grep -q "allure-html-"; then
+                mkdir -p "artifacts/${name}/_html"
+                mv "artifacts/${name}"/* "artifacts/${name}/_html" 2>/dev/null || true
+              fi
             done
           fi
 
