@@ -2,9 +2,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const argv = require('minimist')(process.argv.slice(2));
-const out = argv.out || 'summary.json';
-const suite = argv.suite || 'suite';
+// Simple arg parsing to avoid extra deps (accept --out=FILE and --suite=NAME)
+const rawArgs = process.argv.slice(2);
+let out = 'summary.json';
+let suite = 'suite';
+for (const a of rawArgs) {
+  if (a.startsWith('--out=')) out = a.split('=')[1];
+  if (a.startsWith('--suite=')) suite = a.split('=')[1];
+}
 const dir = path.resolve(process.cwd(), 'allure-results');
 
 let passed = 0, failed = 0, total = 0;
