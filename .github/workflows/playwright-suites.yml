@@ -29,8 +29,31 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install dependencies (fast)
+        run: |
+          npm ci --prefer-offline --no-audit --progress=false
+          # Only install Playwright browsers if not cached
+          if [ ! -d "~/.cache/ms-playwright" ] && [ ! -d "$HOME/.cache/ms-playwright" ]; then
+            npx playwright install --with-deps
+          fi
 
       - name: Run tests for suite
         run: |
@@ -84,17 +107,46 @@ jobs:
             done
           fi
 
-      - name: Prepare site folder
+      - name: Prepare and merge site for timestamped run
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p site
-          mkdir -p site/data
-          if [ -d artifacts/summary-petstore ]; then cp artifacts/summary-petstore/* site/; fi
-          if [ -d artifacts/summary-api ]; then cp artifacts/summary-api/* site/; fi
-          if [ -d artifacts/summary-e2e ]; then cp artifacts/summary-e2e/* site/; fi
-          cp -R dashboard/* site/ || true
+          set -e
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          echo "Run timestamp: $TS"
+          mkdir -p deploy
+
+          # If gh-pages exists, fetch its contents so we preserve prior runs
+          if git ls-remote --exit-code --heads origin gh-pages; then
+            echo "Cloning existing gh-pages branch"
+            git clone --depth 1 --branch gh-pages "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ghpages || true
+            cp -R ghpages/* deploy/ || true
+          else
+            echo "No gh-pages branch yet; starting fresh"
+          fi
+
+          # Create a timestamped folder for this run
+          RUN_DIR=deploy/${TS}
+          mkdir -p "${RUN_DIR}"
+
+          # Copy dashboard and current summaries into run folder
+          cp -R dashboard/* "${RUN_DIR}/" || true
+          if [ -d artifacts ]; then
+            # copy any summary-*.json files
+            find artifacts -maxdepth 2 -type f -name 'summary-*.json' -exec cp {} "${RUN_DIR}/" \; || true
+          fi
+
+          # Generate a simple index listing all runs (directories)
+          echo "<html><head><meta charset=\"utf-8\"><title>Test Runs</title></head><body><h1>Test Runs</h1><ul>" > deploy/index.html
+          for d in $(ls -1 deploy | grep -E '^[0-9]{4}-' | sort -r); do
+            if [ -d "deploy/$d" ]; then
+              echo "<li><a href=\"./$d/\">$d</a></li>" >> deploy/index.html
+            fi
+          done
+          echo "</ul></body></html>" >> deploy/index.html
 
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          publish_dir: ./deploy
