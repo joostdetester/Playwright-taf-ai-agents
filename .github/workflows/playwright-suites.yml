@@ -23,9 +23,6 @@ on:
   
 permissions:
   contents: write
-  pages: write
-  deployments: write
-  id-token: write
 
 jobs:
   validate-frontmatter:
@@ -51,6 +48,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Normalize run parameters
+        shell: bash
+        run: |
+          set -e
+          clean_tag=$(echo "${TAG}" | xargs)
+          clean_env=$(echo "${TARGET_ENV}" | xargs)
+
+          echo "TAG=${clean_tag}" >> "$GITHUB_ENV"
+          echo "TARGET_ENV=${clean_env}" >> "$GITHUB_ENV"
+
+          echo "Normalized TAG='${clean_tag}'"
+          echo "Normalized TARGET_ENV='${clean_env}'"
+
       - name: Resolve suite name (for artifacts)
         id: meta
         shell: bash
@@ -58,6 +68,7 @@ jobs:
           set -e
           # Create a safe suite name from the tag so we can name artifacts/files
           suite=$(echo "${TAG}" | sed 's/^@//' | tr -cs '[:alnum:]._-' '-' | tr '[:upper:]' '[:lower:]')
+          suite=$(echo "${suite}" | sed 's/^-*//' | sed 's/-*$//')
           suite=${suite:-tagged}
           echo "suite=${suite}" >> "$GITHUB_OUTPUT"
           echo "Resolved suite=${suite} from TAG=${TAG}"
@@ -236,19 +247,7 @@ jobs:
           done
           echo "</ul></body></html>" >> deploy/index.html
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./deploy
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
-
-      - name: Update gh-pages branch (keep history)
+      - name: Publish to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
