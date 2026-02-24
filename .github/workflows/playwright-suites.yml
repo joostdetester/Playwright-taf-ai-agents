@@ -217,8 +217,7 @@ jobs:
           RUN_DIR=deploy/${TS}
           mkdir -p "${RUN_DIR}"
 
-          # Copy dashboard and current summaries into run folder
-          cp -R dashboard/* "${RUN_DIR}/" || true
+          # Copy current summaries into run folder
           if [ -d artifacts ]; then
             # copy any summary-*.json files
             find artifacts -maxdepth 2 -type f -name 'summary-*.json' -exec cp {} "${RUN_DIR}/" \; || true
@@ -237,6 +236,31 @@ jobs:
               echo "No allure-html-* artifacts found"
             fi
           fi
+
+          # Create a simple per-run landing page that links to detailed reports
+          echo "<html><head><meta charset=\"utf-8\"><title>Test Run ${TS}</title></head><body>" > "${RUN_DIR}/index.html"
+          echo "<h1>Test Run: ${TS}</h1>" >> "${RUN_DIR}/index.html"
+          echo "<p><a href=\"../\">Back to runs index</a></p>" >> "${RUN_DIR}/index.html"
+
+          echo "<h2>Reports</h2><ul>" >> "${RUN_DIR}/index.html"
+          if [ -d "${RUN_DIR}/allure" ]; then
+            for d in "${RUN_DIR}/allure"/*; do
+              [ -d "$d" ] || continue
+              suite=$(basename "$d")
+              echo "<li>${suite}: <a href=\"./allure/${suite}/\">Allure report</a></li>" >> "${RUN_DIR}/index.html"
+            done
+          else
+            echo "<li>(No Allure HTML reports)</li>" >> "${RUN_DIR}/index.html"
+          fi
+
+          # Summary JSONs (used for quick totals / integrations)
+          if ls "${RUN_DIR}"/summary-*.json >/dev/null 2>&1; then
+            for f in "${RUN_DIR}"/summary-*.json; do
+              b=$(basename "$f")
+              echo "<li><a href=\"./${b}\">${b}</a></li>" >> "${RUN_DIR}/index.html"
+            done
+          fi
+          echo "</ul></body></html>" >> "${RUN_DIR}/index.html"
 
           # Generate a simple index listing all runs (directories)
           echo "<html><head><meta charset=\"utf-8\"><title>Test Runs</title></head><body><h1>Test Runs</h1><ul>" > deploy/index.html
@@ -260,14 +284,14 @@ jobs:
           BASE_URL="${{ steps.runmeta.outputs.base_url }}"
           RUN_URL="${{ steps.runmeta.outputs.run_url }}"
 
-          echo "### Deployed dashboard" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Deployed run" >> "$GITHUB_STEP_SUMMARY"
           echo "- [Open latest run](${RUN_URL})" >> "$GITHUB_STEP_SUMMARY"
           echo "- [Open runs index](${BASE_URL})" >> "$GITHUB_STEP_SUMMARY"
 
-          # List any suite-level Allure reports we published
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Suite reports" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Detailed reports" >> "$GITHUB_STEP_SUMMARY"
 
+          # Suite-level Allure HTML reports
           if [ -d "deploy/${TS}/allure" ]; then
             found=0
             for p in deploy/${TS}/allure/*; do
@@ -283,8 +307,16 @@ jobs:
             echo "- (no Allure HTML reports found)" >> "$GITHUB_STEP_SUMMARY"
           fi
 
+          # Summary JSONs for quick totals/integrations
+          if ls "deploy/${TS}"/summary-*.json >/dev/null 2>&1; then
+            for f in deploy/${TS}/summary-*.json; do
+              b=$(basename "$f")
+              echo "- [${b}](${RUN_URL}${b})" >> "$GITHUB_STEP_SUMMARY"
+            done
+          fi
+
           # also print as plain log for quick access
-          echo "Dashboard URL: ${RUN_URL}"
+          echo "Run URL: ${RUN_URL}"
 
       - name: Add tag/env info to workflow summary
         run: |
