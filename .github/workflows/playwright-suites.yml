@@ -3,26 +3,48 @@ name: Playwright Suites
 on:
   push:
     branches: [ main ]
+  schedule:
+    - cron: '0 6 * * *'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Run tests containing this tag (e.g. @e2e)"
+        required: true
+        default: "@e2e"
+      target_env:
+        description: "Target environment (future use)"
+        type: choice
+        required: true
+        default: "test"
+        options:
+          - test
+          - acc
+          - prod
   
 permissions:
   contents: write
   pages: write
+  deployments: write
 
 jobs:
   run-suite:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - suite: petstore
-            tag: '@petstore'
-          - suite: api
-            tag: '@api'
-          - suite: e2e
-            tag: '@e2e'
+    env:
+      TAG: ${{ inputs.tag || vars.SCHEDULE_TAG || '@e2e' }}
+      TARGET_ENV: ${{ inputs.target_env || vars.TARGET_ENV || 'test' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve suite name (for artifacts)
+        id: meta
+        shell: bash
+        run: |
+          set -e
+          # Create a safe suite name from the tag so we can name artifacts/files
+          suite=$(echo "${TAG}" | sed 's/^@//' | tr -cs '[:alnum:]._-' '-' | tr '[:upper:]' '[:lower:]')
+          suite=${suite:-tagged}
+          echo "suite=${suite}" >> "$GITHUB_OUTPUT"
+          echo "Resolved suite=${suite} from TAG=${TAG}"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -57,13 +79,13 @@ jobs:
 
       - name: Run tests for suite
         run: |
-          echo "Running suite=${{ matrix.suite }} tag=${{ matrix.tag }}"
+          echo "Running TAG=${TAG} TARGET_ENV=${TARGET_ENV}"
           # Generate BDD tests and run Playwright with the requested tag
-          npm run bdd -- --grep="${{ matrix.tag }}" || true
+          npm run bdd -- --grep="${TAG}" || true
 
       - name: Generate summary JSON
         run: |
-          node scripts/generate-summary.js --suite=${{ matrix.suite }} --out=summary-${{ matrix.suite }}.json || true
+          node scripts/generate-summary.js --suite=${{ steps.meta.outputs.suite }} --out=summary-${{ steps.meta.outputs.suite }}.json || true
 
       - name: Install Allure CLI
         run: |
@@ -81,64 +103,78 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-html-${{ matrix.suite }}
+          name: allure-html-${{ steps.meta.outputs.suite }}
           path: allure-report
+          if-no-files-found: ignore
 
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: allure-${{ matrix.suite }}
+          name: allure-${{ steps.meta.outputs.suite }}
           path: allure-results
+          if-no-files-found: ignore
 
       - name: Upload summary
         uses: actions/upload-artifact@v4
         with:
-          name: summary-${{ matrix.suite }}
-          path: summary-${{ matrix.suite }}.json
+          name: summary-${{ steps.meta.outputs.suite }}
+          path: summary-${{ steps.meta.outputs.suite }}.json
+          if-no-files-found: ignore
 
   publish-dashboard:
     name: Publish dashboard to GitHub Pages
     needs: run-suite
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.runmeta.outputs.run_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download all summary artifacts (robust)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compute run timestamp + URLs
+        id: runmeta
+        shell: bash
         run: |
-          echo "Listing artifacts for run $GITHUB_RUN_ID"
-          mkdir -p artifacts
-          API_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts"
-          echo "Querying $API_URL"
-          artifacts_json=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "$API_URL")
-          echo "$artifacts_json" > artifacts/list.json
-          ids=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name | test("^(summary-|allure-html-)")) | "\(.id):\(.name)"') || true
-          if [ -z "$ids" ]; then
-            echo "No summary-* artifacts found"
-          else
-            echo "$ids" | while IFS= read -r line; do
-              id=$(echo "$line" | cut -d: -f1)
-              name=$(echo "$line" | cut -d: -f2)
-              echo "Downloading artifact id=$id name=$name"
-              curl -s -L -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" -o "/tmp/${name}.zip"
-              unzip -o "/tmp/${name}.zip" -d "artifacts/${name}" || true
-              # If this is an allure-html artifact, move its contents into a folder we can serve
-              if echo "$name" | grep -q "allure-html-"; then
-                mkdir -p "artifacts/${name}/_html"
-                mv "artifacts/${name}"/* "artifacts/${name}/_html" 2>/dev/null || true
-              fi
-            done
-          fi
+          set -e
+          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/"
+          RUN_URL="${BASE_URL}${TS}/"
+
+          echo "ts=${TS}" >> "$GITHUB_OUTPUT"
+          echo "base_url=${BASE_URL}" >> "$GITHUB_OUTPUT"
+          echo "run_url=${RUN_URL}" >> "$GITHUB_OUTPUT"
+
+          echo "Run timestamp: ${TS}"
+          echo "Base URL: ${BASE_URL}"
+          echo "Run URL: ${RUN_URL}"
+
+      - name: Download summary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: summary-*
+          path: artifacts
+
+      - name: Download Allure HTML artifacts
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: allure-html-*
+          path: artifacts
 
       - name: Prepare and merge site for timestamped run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -e
-          TS=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
+          TS="${{ steps.runmeta.outputs.ts }}"
+          BASE_URL="${{ steps.runmeta.outputs.base_url }}"
+          RUN_URL="${{ steps.runmeta.outputs.run_url }}"
+
           echo "Run timestamp: $TS"
+          # persist timestamp so later steps can reference it
+          echo "$TS" > run_timestamp.txt
           mkdir -p deploy
 
           # If gh-pages exists, fetch its contents so we preserve prior runs
@@ -159,6 +195,20 @@ jobs:
           if [ -d artifacts ]; then
             # copy any summary-*.json files
             find artifacts -maxdepth 2 -type f -name 'summary-*.json' -exec cp {} "${RUN_DIR}/" \; || true
+
+            # copy Allure HTML reports into a stable, timestamped path
+            # artifacts are downloaded as artifacts/allure-html-<suite>/...
+            if ls artifacts/allure-html-* >/dev/null 2>&1; then
+              mkdir -p "${RUN_DIR}/allure"
+              for d in artifacts/allure-html-*; do
+                [ -d "$d" ] || continue
+                suite=$(basename "$d" | sed 's/^allure-html-//')
+                mkdir -p "${RUN_DIR}/allure/${suite}"
+                cp -R "$d"/* "${RUN_DIR}/allure/${suite}/" || true
+              done
+            else
+              echo "No allure-html-* artifacts found"
+            fi
           fi
 
           # Generate a simple index listing all runs (directories)
@@ -175,3 +225,42 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
+
+      - name: Add run link to workflow summary
+        run: |
+          TS="${{ steps.runmeta.outputs.ts }}"
+          BASE_URL="${{ steps.runmeta.outputs.base_url }}"
+          RUN_URL="${{ steps.runmeta.outputs.run_url }}"
+
+          echo "### Deployed dashboard" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [Open latest run](${RUN_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [Open runs index](${BASE_URL})" >> "$GITHUB_STEP_SUMMARY"
+
+          # List any suite-level Allure reports we published
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Suite reports" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -d "deploy/${TS}/allure" ]; then
+            found=0
+            for p in deploy/${TS}/allure/*; do
+              [ -d "$p" ] || continue
+              suite=$(basename "$p")
+              found=1
+              echo "- ${suite}: [Allure report](${RUN_URL}allure/${suite}/)" >> "$GITHUB_STEP_SUMMARY"
+            done
+            if [ "$found" -eq 0 ]; then
+              echo "- (no Allure HTML reports found)" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "- (no Allure HTML reports found)" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # also print as plain log for quick access
+          echo "Dashboard URL: ${RUN_URL}"
+
+      - name: Add tag/env info to workflow summary
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Run parameters" >> "$GITHUB_STEP_SUMMARY"
+          echo "- TAG: ${{ inputs.tag || vars.SCHEDULE_TAG || '@e2e' }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- TARGET_ENV: ${{ inputs.target_env || vars.TARGET_ENV || 'test' }}" >> "$GITHUB_STEP_SUMMARY"
