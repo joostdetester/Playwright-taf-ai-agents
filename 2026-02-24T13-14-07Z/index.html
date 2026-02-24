@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test Suites Dashboard</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f4f6f8}
+    h1{margin-bottom:16px}
+    .grid{display:flex;gap:12px;flex-wrap:wrap}
+    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);width:220px}
+    .card h2{margin:0 0 8px;font-size:16px}
+    .count{font-size:28px;font-weight:700}
+    .ok{color:green}
+    .bad{color:#d9534f}
+    .meta{font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <h1>CI Test Suites Dashboard</h1>
+  <div class="grid" id="grid"></div>
+  <script>
+    const suites = ['petstore','api','e2e'];
+    const grid = document.getElementById('grid');
+
+    async function loadSuite(s){
+      try{
+        const res = await fetch(`summary-${s}.json`);
+        if(!res.ok) throw new Error('not found');
+        const j = await res.json();
+        return j;
+      }catch(e){
+        return null;
+      }
+    }
+
+    (async ()=>{
+      for(const s of suites){
+        const data = await loadSuite(s);
+        const card = document.createElement('div'); card.className='card';
+        const title = document.createElement('h2'); title.textContent = s; card.appendChild(title);
+        if(!data){
+          const p = document.createElement('div'); p.textContent='No data'; p.className='meta'; card.appendChild(p);
+        } else {
+          const tot = document.createElement('div'); tot.className='count'; tot.textContent = data.total || 0; card.appendChild(tot);
+          const meta = document.createElement('div'); meta.className='meta';
+          meta.innerHTML = `Passed: <span class="ok">${data.passed||0}</span> • Failed: <span class="bad">${data.failed||0}</span>`;
+          card.appendChild(meta);
+        }
+        grid.appendChild(card);
+      }
+    })();
+  </script>
+</body>
+</html>
