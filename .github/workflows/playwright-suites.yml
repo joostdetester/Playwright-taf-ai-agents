@@ -25,6 +25,7 @@ permissions:
   contents: write
   pages: write
   deployments: write
+  id-token: write
 
 jobs:
   run-suite:
@@ -220,10 +221,23 @@ jobs:
           done
           echo "</ul></body></html>" >> deploy/index.html
 
-      - name: Publish to gh-pages
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./deploy
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Update gh-pages branch (keep history)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
           publish_dir: ./deploy
 
       - name: Add run link to workflow summary
