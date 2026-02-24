@@ -1,3 +1,4 @@
+@db @st
 Feature: Dummy DB feature
 
   Scenario: Seed and read books from database
