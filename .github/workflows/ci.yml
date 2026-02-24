@@ -50,6 +50,25 @@ jobs:
           DB_NAME: rahulshettyacademy
         run: |
           npm run bdd:dummy
+      # Example: to enable MCP servers and inject secrets from GitHub Secrets,
+      # uncomment and adjust the following env mapping. Keep MCP disabled by
+      # default to avoid running local-only agents in CI.
+      # - name: Run with MCP (example)
+      #   env:
+      #     BASE_URL: https://rahulshettyacademy.com
+      #     API_BASE_URL: https://rahulshettyacademy.com
+      #     MCP_ENABLED: true
+      #     GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+      #     REST_BASE_URL: ${{ secrets.REST_BASE_URL }}
+      #     MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+      #     MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
+      #     MYSQL_USER: ${{ secrets.MYSQL_USER }}
+      #     MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+      #     MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+      #   run: |
+      #     npm ci
+      #     npm run mcp:filesystem & npm run mcp:playwright
+      #     npm run bdd
       - name: Generate Allure report
         if: always()
         run: |

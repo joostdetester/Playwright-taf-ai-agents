@@ -71,6 +71,23 @@ Notes and best practices
 - If you move the `agents/` folder, update `ai/orchestration/agentOrchestrator.ts` to point to the new path (it resolves agents from the repo root by default).
 - Agents that modify files or perform side effects should be run only in trusted local environments, not CI.
 
+CI secrets mapping
+- To run MCP servers or agents in CI you must store secrets in your Git provider (GitHub Secrets for GitHub Actions). Below are recommended secret names and their intended use:
+
+	- `GITHUB_PERSONAL_ACCESS_TOKEN` : GitHub PAT used by GitHub MCP server or any GitHub API interactions.
+	- `REST_BASE_URL` : optional base URL for the MCP REST shim.
+	- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE` : DB connection values for MCP services or tests that need remote DB access (CI jobs usually use service containers instead).
+
+- In GitHub Actions you can map secrets into a job step's environment like this:
+
+	```yaml
+	env:
+		GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+		REST_BASE_URL: ${{ secrets.REST_BASE_URL }}
+	```
+
+- Recommendation: keep MCP disabled in CI by default (`MCP_ENABLED: false`), and enable it explicitly only for specialized workflows that require it. Use GitHub Secrets to inject tokens rather than committing them.
+
 Security
 - Keep secrets out of the repo. Use `.env` locally and set secrets in CI provider.
 
