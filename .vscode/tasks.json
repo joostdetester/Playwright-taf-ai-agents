@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "MCP: Start filesystem server",
+      "type": "shell",
+      "presentation": { "reveal": "always" },
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-Content .vscode/.env.agents | ForEach-Object { if ($_ -match '=') { $p = $_ -split '='; Set-Item -Path Env:$($p[0]) -Value $p[1] } }; npx -y @modelcontextprotocol/server-filesystem 'C:/Users/joost/OneDrive/Documenten/Projects'\""
+    },
+    {
+      "label": "MCP: Start Playwright helper",
+      "type": "shell",
+      "presentation": { "reveal": "always" },
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-Content .vscode/.env.agents | ForEach-Object { if ($_ -match '=') { $p = $_ -split '='; Set-Item -Path Env:$($p[0]) -Value $p[1] } }; npx @playwright/mcp@latest\""
+    },
+    {
+      "label": "MCP: Start REST shim",
+      "type": "shell",
+      "presentation": { "reveal": "always" },
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-Content .vscode/.env.agents | ForEach-Object { if ($_ -match '=') { $p = $_ -split '='; Set-Item -Path Env:$($p[0]) -Value $p[1] } }; node C:/Users/joost/AppData/Roaming/npm/node_modules/dkmaker-mcp-rest-api/build/index.js\""
+    },
+    {
+      "label": "MCP: Start GitHub MCP (docker)",
+      "type": "shell",
+      "presentation": { "reveal": "always" },
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-Content .vscode/.env.agents | ForEach-Object { if ($_ -match '=') { $p = $_ -split '='; Set-Item -Path Env:$($p[0]) -Value $p[1] } }; docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server\""
+    }
+  ]
+}
