@@ -57,23 +57,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download petstore summary
-        uses: actions/download-artifact@v4
-        with:
-          name: summary-petstore
-          path: artifacts || true
-
-      - name: Download api summary
-        uses: actions/download-artifact@v4
-        with:
-          name: summary-api
-          path: artifacts || true
-
-      - name: Download e2e summary
-        uses: actions/download-artifact@v4
-        with:
-          name: summary-e2e
-          path: artifacts || true
+      - name: Download all summary artifacts (robust)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Listing artifacts for run $GITHUB_RUN_ID"
+          mkdir -p artifacts
+          API_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts"
+          echo "Querying $API_URL"
+          artifacts_json=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" "$API_URL")
+          echo "$artifacts_json" > artifacts/list.json
+          ids=$(echo "$artifacts_json" | jq -r '.artifacts[] | select(.name | test("^summary-")) | "\(.id):\(.name)"') || true
+          if [ -z "$ids" ]; then
+            echo "No summary-* artifacts found"
+          else
+            echo "$ids" | while IFS= read -r line; do
+              id=$(echo "$line" | cut -d: -f1)
+              name=$(echo "$line" | cut -d: -f2)
+              echo "Downloading artifact id=$id name=$name"
+              curl -s -L -H "Authorization: token ${GITHUB_TOKEN}" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" -o "/tmp/${name}.zip"
+              unzip -o "/tmp/${name}.zip" -d "artifacts/${name}" || true
+            done
+          fi
 
       - name: Prepare site folder
         run: |
