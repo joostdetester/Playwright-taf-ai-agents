@@ -1,6 +1,5 @@
-
 import { Page, TestInfo } from '@playwright/test';
-import { World } from '../steps/world';
+import { World } from '../../steps/world';
 
 export type UIActionContext = {
   page: Page;
