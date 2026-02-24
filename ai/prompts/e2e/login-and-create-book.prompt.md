@@ -1,3 +1,12 @@
+---
+title: Login and Create Book prompt
+description: Prompt for generating an end-to-end test that logs in, creates a book via API and verifies DB/UI.
+owner: team-qa
+tags: [prompt,e2e,login,create-book]
+version: 1.0
+---
+
+```prompt
 # Test: Login + Create Book (E2E)
 
 Context:
@@ -24,3 +33,4 @@ Constraints:
 Output:
 - features/e2e/login-and-create-book.feature
 - steps/e2e/login-and-create-book.steps.ts
+```

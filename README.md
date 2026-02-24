@@ -34,7 +34,7 @@ Configuration
 - Do not commit secrets. Use `.env` locally and GitHub Secrets/Variables in CI.
 
 Architecture rules
-- UI steps must only use `ui/pages` and `page` actions.
+- UI steps must only use `page-objects` (root) and page action helpers.
 - API steps must only use `api/clients`.
 - DB steps must only use `db/repositories`.
 - Cross-layer usage should be explicit in Gherkin and reviewed.
