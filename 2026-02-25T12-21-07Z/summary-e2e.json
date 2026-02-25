@@ -1,0 +1,12 @@
+{
+  "suite": "e2e",
+  "total": 6,
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "failedTests": [],
+  "status": "PASSED",
+  "start": "2026-02-25T12:19:46.581Z",
+  "stop": "2026-02-25T12:20:48.096Z",
+  "durationMs": 61515
+}
