@@ -283,10 +283,14 @@ jobs:
           TS="${{ steps.runmeta.outputs.ts }}"
           BASE_URL="${{ steps.runmeta.outputs.base_url }}"
           RUN_URL="${{ steps.runmeta.outputs.run_url }}"
+          GH_PAGES_TREE_URL="https://github.com/${GITHUB_REPOSITORY}/tree/gh-pages"
+          GH_PAGES_RUN_TREE_URL="https://github.com/${GITHUB_REPOSITORY}/tree/gh-pages/${TS}"
 
           echo "### Deployed run" >> "$GITHUB_STEP_SUMMARY"
           echo "- [Open latest run](${RUN_URL})" >> "$GITHUB_STEP_SUMMARY"
           echo "- [Open runs index](${BASE_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [View gh-pages branch](${GH_PAGES_TREE_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [View this run folder on gh-pages](${GH_PAGES_RUN_TREE_URL})" >> "$GITHUB_STEP_SUMMARY"
 
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "### Detailed reports" >> "$GITHUB_STEP_SUMMARY"
@@ -317,6 +321,11 @@ jobs:
 
           # also print as plain log for quick access
           echo "Run URL: ${RUN_URL}"
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### If you see a 404" >> "$GITHUB_STEP_SUMMARY"
+          echo "This workflow publishes to the \`gh-pages\` branch." >> "$GITHUB_STEP_SUMMARY"
+          echo "In repo Settings → Pages, set Source to **Deploy from a branch** and select branch **gh-pages** and folder **/(root)**." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Add tag/env info to workflow summary
         run: |
