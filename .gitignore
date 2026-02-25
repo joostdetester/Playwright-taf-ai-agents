@@ -10,3 +10,5 @@ playwright-report/
 .vscode/.env.agents
 artifacts/
 videos/
+
+ghpages/
