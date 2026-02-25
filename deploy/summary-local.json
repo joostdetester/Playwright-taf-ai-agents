@@ -1,0 +1,12 @@
+{
+  "suite": "local",
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "skipped": 0,
+  "failedTests": [],
+  "status": "PASSED",
+  "start": "2026-02-25T09:32:59.948Z",
+  "stop": "2026-02-25T09:33:14.454Z",
+  "durationMs": 14506
+}

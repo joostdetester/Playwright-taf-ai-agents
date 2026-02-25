@@ -13,23 +13,22 @@ for (const a of rawArgs) {
 
 const dir = path.resolve(process.cwd(), 'allure-results');
 
-function findStatusesInObject(obj, collector) {
-  if (!obj || typeof obj !== 'object') return;
-  for (const k of Object.keys(obj)) {
-    const v = obj[k];
-    if (k === 'status' && typeof v === 'string') {
-      const s = String(v).toLowerCase();
-      collector.statuses.push(s);
-    } else if ((k === 'time' || k === 'duration' || k === 'start' || k === 'stop') && typeof v !== 'undefined') {
-      // record timestamps where found
-      if (k === 'time' && typeof v === 'object') {
-        if (v.start) collector.times.push(Number(v.start));
-        if (v.stop) collector.times.push(Number(v.stop));
-      } else if (k === 'start' || k === 'stop') {
-        collector.times.push(Number(v));
-      }
-    } else if (typeof v === 'object') {
-      findStatusesInObject(v, collector);
+function findTestResults(obj, collector) {
+  if (!obj) return;
+  // If this object looks like an Allure test result (has a name and status), treat it as one result
+  if (typeof obj === 'object' && (obj.name || obj.fullName || obj.uuid) && typeof obj.status === 'string') {
+    collector.results.push({ status: String(obj.status).toLowerCase(), name: obj.name || obj.fullName || obj.uuid, time: (obj.time || obj) });
+    return;
+  }
+  // If array, scan items
+  if (Array.isArray(obj)) {
+    for (const item of obj) findTestResults(item, collector);
+    return;
+  }
+  // Otherwise recurse into object properties
+  if (typeof obj === 'object') {
+    for (const k of Object.keys(obj)) {
+      try { findTestResults(obj[k], collector); } catch (e) {}
     }
   }
 }
@@ -43,6 +42,7 @@ if (!fs.existsSync(dir)) {
 
 let total = 0, passed = 0, failed = 0, skipped = 0;
 let times = [];
+let failedNames = [];
 
 const files = fs.readdirSync(dir);
 for (const f of files) {
@@ -52,19 +52,30 @@ for (const f of files) {
     // Try parse as JSON and recursively extract statuses/times
     try {
       const obj = JSON.parse(content);
-      const collector = { statuses: [], times: [] };
+      const collector = { results: [] };
       if (Array.isArray(obj)) {
-        for (const item of obj) findStatusesInObject(item, collector);
+        for (const item of obj) findTestResults(item, collector);
       } else {
-        findStatusesInObject(obj, collector);
+        findTestResults(obj, collector);
       }
-      for (const s of collector.statuses) {
+      for (const r of collector.results) {
+        const s = (r.status || '').toLowerCase();
         if (s === 'passed') passed++;
         else if (s === 'failed') failed++;
         else if (s === 'skipped') skipped++;
         total++;
+        if (s === 'failed' && r.name) failedNames.push(String(r.name));
+        // collect potential time info
+        if (r.time) {
+          // r.time may be an object like {start,stop} or a numeric start
+          if (typeof r.time === 'object') {
+            if (r.time.start) times.push(Number(r.time.start));
+            if (r.time.stop) times.push(Number(r.time.stop));
+          } else if (Number.isFinite(Number(r.time))) {
+            times.push(Number(r.time));
+          }
+        }
       }
-      times.push(...collector.times.filter(t => Number.isFinite(Number(t))).map(Number));
       continue;
     } catch (err) {
       // not JSON - fall back to regex
@@ -103,6 +114,6 @@ if (times.length > 0) {
   durationMs = times[times.length-1] - times[0];
 }
 
-const payload = { suite, total, passed, failed, skipped, status, start, stop, durationMs };
+const payload = { suite, total, passed, failed, skipped, failedTests: failedNames, status, start, stop, durationMs };
 fs.writeFileSync(out, JSON.stringify(payload, null, 2));
 console.log('Wrote summary:', out, JSON.stringify(payload));

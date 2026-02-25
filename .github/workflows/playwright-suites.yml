@@ -265,14 +265,14 @@ jobs:
           # Generate a richer index with status + counts per run
           echo "<html><head><meta charset=\"utf-8\"><title>Test Runs</title></head><body><h1>Test Runs</h1>" > deploy/index.html
           echo "<table border=\"1\" cellpadding=\"6\" cellspacing=\"0\">" >> deploy/index.html
-          echo "<thead><tr><th>Run (UTC)</th><th>Status</th><th>Total</th><th>Passed</th><th>Failed</th><th>Links</th></tr></thead><tbody>" >> deploy/index.html
+          echo "<thead><tr><th>Run (UTC)</th><th>Status</th><th>Total</th><th>Passed</th><th>Failed</th><th>Failed tests</th><th>Links</th></tr></thead><tbody>" >> deploy/index.html
 
           for d in $(ls -1 deploy | grep -E '^[0-9]{4}-' | sort -r); do
             [ -d "deploy/$d" ] || continue
 
             # Aggregate summary-*.json for the run (no external deps)
-            read -r STATUS TOTAL PASSED FAILED < <(
-              node -e "const fs=require('fs'); const dir=process.argv[1]; let total=0, passed=0, failed=0; let status='UNKNOWN'; try { const files=fs.readdirSync(dir).filter(f=>/^summary-.*\\.json$/.test(f)); for (const f of files) { try { const j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); total += Number(j.total||0); passed += Number(j.passed||0); failed += Number(j.failed||0); } catch {} } if (total>0) status = failed>0 ? 'FAILED' : 'PASSED'; } catch {} console.log([status,total,passed,failed].join(' '));" "deploy/$d"
+            IFS=$'\t' read -r STATUS TOTAL PASSED FAILED FAILED_JSON < <(
+              node -e "const fs=require('fs'); const dir=process.argv[1]; let total=0, passed=0, failed=0; let failedNames=[]; let status='UNKNOWN'; try { const files=fs.readdirSync(dir).filter(f=>/^summary-.*\\.json$/.test(f)); for (const f of files) { try { const j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); total += Number(j.total||0); passed += Number(j.passed||0); failed += Number(j.failed||0); if (Array.isArray(j.failedTests)) failedNames = failedNames.concat(j.failedTests); } catch {} } if (total>0) status = failed>0 ? 'FAILED' : 'PASSED'; } catch {} console.log([status,total,passed,failed,JSON.stringify(failedNames)].join('\t'))" "deploy/$d"
             )
 
             # Pick a default suite to link to Allure (first folder under /allure)
@@ -283,7 +283,9 @@ jobs:
               LINKS="$LINKS | <a href=\"./$d/allure/${DEFAULT_SUITE}/\">Allure (${DEFAULT_SUITE})</a>"
             fi
 
-            echo "<tr><td><a href=\"./$d/\">$d</a></td><td>${STATUS}</td><td>${TOTAL}</td><td>${PASSED}</td><td>${FAILED}</td><td>${LINKS}</td></tr>" >> deploy/index.html
+            # Unescape the JSON so it renders nicely in HTML
+            FAILED_TEXT=$(echo "${FAILED_JSON}" | python3 -c "import sys, json; print(', '.join(json.loads(sys.stdin.read() or '[]')))")
+            echo "<tr><td><a href=\"./$d/\">$d</a></td><td>${STATUS}</td><td>${TOTAL}</td><td>${PASSED}</td><td>${FAILED}</td><td><pre>${FAILED_TEXT}</pre></td><td>${LINKS}</td></tr>" >> deploy/index.html
           done
 
           echo "</tbody></table></body></html>" >> deploy/index.html
