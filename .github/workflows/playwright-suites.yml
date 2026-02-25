@@ -262,14 +262,31 @@ jobs:
           fi
           echo "</ul></body></html>" >> "${RUN_DIR}/index.html"
 
-          # Generate a simple index listing all runs (directories)
-          echo "<html><head><meta charset=\"utf-8\"><title>Test Runs</title></head><body><h1>Test Runs</h1><ul>" > deploy/index.html
+          # Generate a richer index with status + counts per run
+          echo "<html><head><meta charset=\"utf-8\"><title>Test Runs</title></head><body><h1>Test Runs</h1>" > deploy/index.html
+          echo "<table border=\"1\" cellpadding=\"6\" cellspacing=\"0\">" >> deploy/index.html
+          echo "<thead><tr><th>Run (UTC)</th><th>Status</th><th>Total</th><th>Passed</th><th>Failed</th><th>Links</th></tr></thead><tbody>" >> deploy/index.html
+
           for d in $(ls -1 deploy | grep -E '^[0-9]{4}-' | sort -r); do
-            if [ -d "deploy/$d" ]; then
-              echo "<li><a href=\"./$d/\">$d</a></li>" >> deploy/index.html
+            [ -d "deploy/$d" ] || continue
+
+            # Aggregate summary-*.json for the run (no external deps)
+            read -r STATUS TOTAL PASSED FAILED < <(
+              node -e "const fs=require('fs'); const dir=process.argv[1]; let total=0, passed=0, failed=0; let status='UNKNOWN'; try { const files=fs.readdirSync(dir).filter(f=>/^summary-.*\\.json$/.test(f)); for (const f of files) { try { const j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); total += Number(j.total||0); passed += Number(j.passed||0); failed += Number(j.failed||0); } catch {} } if (total>0) status = failed>0 ? 'FAILED' : 'PASSED'; } catch {} console.log([status,total,passed,failed].join(' '));" "deploy/$d"
+            )
+
+            # Pick a default suite to link to Allure (first folder under /allure)
+            DEFAULT_SUITE=$(ls -1 "deploy/$d/allure" 2>/dev/null | head -n 1 || true)
+
+            LINKS="<a href=\"./$d/\">Run</a>"
+            if [ -n "${DEFAULT_SUITE}" ]; then
+              LINKS="$LINKS | <a href=\"./$d/allure/${DEFAULT_SUITE}/\">Allure (${DEFAULT_SUITE})</a>"
             fi
+
+            echo "<tr><td><a href=\"./$d/\">$d</a></td><td>${STATUS}</td><td>${TOTAL}</td><td>${PASSED}</td><td>${FAILED}</td><td>${LINKS}</td></tr>" >> deploy/index.html
           done
-          echo "</ul></body></html>" >> deploy/index.html
+
+          echo "</tbody></table></body></html>" >> deploy/index.html
 
       - name: Publish to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
@@ -286,9 +303,17 @@ jobs:
           GH_PAGES_TREE_URL="https://github.com/${GITHUB_REPOSITORY}/tree/gh-pages"
           GH_PAGES_RUN_TREE_URL="https://github.com/${GITHUB_REPOSITORY}/tree/gh-pages/${TS}"
 
+          DEFAULT_SUITE=$(ls -1 "deploy/${TS}/allure" 2>/dev/null | head -n 1 || true)
+          if [ -n "${DEFAULT_SUITE}" ]; then
+            LATEST_URL="${RUN_URL}allure/${DEFAULT_SUITE}/"
+          else
+            LATEST_URL="${RUN_URL}"
+          fi
+
           echo "### Deployed run" >> "$GITHUB_STEP_SUMMARY"
-          echo "- [Open latest run](${RUN_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [Open latest run](${LATEST_URL})" >> "$GITHUB_STEP_SUMMARY"
           echo "- [Open runs index](${BASE_URL})" >> "$GITHUB_STEP_SUMMARY"
+          echo "- [Open run landing page](${RUN_URL})" >> "$GITHUB_STEP_SUMMARY"
           echo "- [View gh-pages branch](${GH_PAGES_TREE_URL})" >> "$GITHUB_STEP_SUMMARY"
           echo "- [View this run folder on gh-pages](${GH_PAGES_RUN_TREE_URL})" >> "$GITHUB_STEP_SUMMARY"
 
