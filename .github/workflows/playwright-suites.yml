@@ -336,8 +336,8 @@ jobs:
             [ -d "deploy/$d" ] || continue
 
             # Aggregate summary-*.json for the run (no external deps)
-            IFS=$'\t' read -r STATUS TOTAL PASSED FAILED FAILED_JSON START < <(
-              node -e "const fs=require('fs'); const dir=process.argv[1]; let total=0, passed=0, failed=0; let failedNames=[]; let status='UNKNOWN'; let starts=[]; try { const files=fs.readdirSync(dir).filter(f=>/^summary-.*\\.json$/.test(f)); for (const f of files) { try { const j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); total += Number(j.total||0); passed += Number(j.passed||0); failed += Number(j.failed||0); if (Array.isArray(j.failedTests)) failedNames = failedNames.concat(j.failedTests); if (j.start) starts.push(j.start); } catch {} } if (total>0) status = failed>0 ? 'FAILED' : 'PASSED'; const start = starts.length?starts.sort()[0]:''; console.log([status,total,passed,failed,JSON.stringify(failedNames),start].join('\t')) } catch (e) { console.log(['UNKNOWN',0,0,0,'[]',''].join('\t')) }" "deploy/$d"
+            IFS=$'\t' read -r STATUS TOTAL PASSED FAILED FAILED_JSON < <(
+              node -e "const fs=require('fs'); const dir=process.argv[1]; let total=0, passed=0, failed=0; let failedNames=[]; let status='UNKNOWN'; try { const files=fs.readdirSync(dir).filter(f=>/^summary-.*\\.json$/.test(f)); for (const f of files) { try { const j=JSON.parse(fs.readFileSync(dir+'/'+f,'utf8')); total += Number(j.total||0); passed += Number(j.passed||0); failed += Number(j.failed||0); if (Array.isArray(j.failedTests)) failedNames = failedNames.concat(j.failedTests); } catch {} } if (total>0) status = failed>0 ? 'FAILED' : 'PASSED'; } catch {} console.log([status,total,passed,failed,JSON.stringify(failedNames)].join('\t'))" "deploy/$d"
             )
 
             # Pick a default suite to link to Allure (first folder under /allure)
@@ -350,35 +350,10 @@ jobs:
 
             # Unescape the JSON so it renders nicely in HTML
             FAILED_TEXT=$(echo "${FAILED_JSON}" | python3 -c "import sys, json; print(', '.join(json.loads(sys.stdin.read() or '[]')))")
-            # Use START (ISO) for display when available; fall back to folder name
-            DISPLAY_TIME=${START:-$d}
-            echo "<tr><td><a href=\"./$d/\">${DISPLAY_TIME}</a></td><td class=\"status-${STATUS}\">${STATUS}</td><td>${TOTAL}</td><td>${PASSED}</td><td>${FAILED}</td><td><pre>${FAILED_TEXT}</pre></td><td>${LINKS}</td></tr>" >> deploy/index.html
+            echo "<tr><td><a href=\"./$d/\">$d</a></td><td>${STATUS}</td><td>${TOTAL}</td><td>${PASSED}</td><td>${FAILED}</td><td><pre>${FAILED_TEXT}</pre></td><td>${LINKS}</td></tr>" >> deploy/index.html
           done
 
-          # Add a small script to compute totals and show current time, then close HTML
-          cat >> deploy/index.html <<'SCRIPT'
-    </tbody>
-    </table>
-    <script>
-      (function(){
-        const rows = Array.from(document.querySelectorAll('table tbody tr'));
-        let total=0, passed=0, failed=0;
-        rows.forEach(r=>{
-          const t = Number(r.children[2].textContent)||0;
-          const p = Number(r.children[3].textContent)||0;
-          const f = Number(r.children[4].textContent)||0;
-          total += t; passed += p; failed += f;
-        });
-        document.getElementById('total-count').textContent = total;
-        document.getElementById('passed-count').textContent = passed;
-        document.getElementById('failed-count').textContent = failed;
-        document.getElementById('now').textContent = new Date().toISOString();
-      })();
-    </script>
-  </div>
-  </body>
-  </html>
-SCRIPT
+          echo "</tbody></table></body></html>" >> deploy/index.html
 
       - name: Publish to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
