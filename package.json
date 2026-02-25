@@ -25,12 +25,12 @@
     "dotenv": "^16.0.0",
     "ffmpeg-static": "^5.3.0",
     "glob": "^10.2.7",
+    "playwright-bdd": "^8.4.2",
     "typescript": "^5.1.6",
     "zod": "^3.21.4"
   },
   "dependencies": {
     "@cucumber/cucumber": "^12.6.0",
-    "mysql2": "^3.17.5",
-    "playwright-bdd": "^8.4.2"
+    "mysql2": "^3.17.5"
   }
 }
