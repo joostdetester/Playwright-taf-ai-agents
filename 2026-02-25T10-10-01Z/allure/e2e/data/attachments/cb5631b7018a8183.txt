@@ -1,0 +1,6 @@
+unknown format "int64" ignored in schema at path "#/properties/id"
+unknown format "int64" ignored in schema at path "#/properties/id"
+unknown format "int64" ignored in schema at path "#/properties/category/properties/id"
+unknown format "int64" ignored in schema at path "#/properties/category/properties/id"
+unknown format "int64" ignored in schema at path "#/properties/tags/items/properties/id"
+unknown format "int64" ignored in schema at path "#/properties/tags/items/properties/id"
