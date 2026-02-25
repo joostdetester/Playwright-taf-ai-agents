@@ -23,6 +23,9 @@ npm run bdd
 npm run bdd:dummy
 ```
 
+Video → Test workflow
+- Step-by-step guide for creating a new test from a UI screen recording: `ai/video-to-test-readme.md`
+
 How it works
 - Feature files: `features/**.feature`
 - Generation: `npx bddgen` generates Playwright tests from feature files (configured in `playwright.config.ts` using `defineBddConfig`).

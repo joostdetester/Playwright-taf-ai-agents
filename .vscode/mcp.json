@@ -23,7 +23,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "C:/Users/joost/OneDrive/Documenten/Projects"
+        "C:\\Users\\joost\\Documents\\Test automation\\Playwright\\Playwright-taf-ai-agents"
       ]
     },
     "rest-api": {

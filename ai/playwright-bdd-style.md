@@ -16,6 +16,13 @@ version: 1.0
 - Scenarios must be independently runnable
 - Scenarios must contain meaningful tags
 
+### Scenario Outlines (Examples)
+- By default, each example row is shown as generic `Example #n` in Playwright/Allure.
+- To make report entries include the variable value, customize the generated example title:
+	- Put `<column>` placeholders in the `Scenario Outline` title (e.g. `... for author "<author>"`).
+	- Or add `# title-format: ... <column> ...` right above `Examples:`.
+	- (Optional) Set the global `examplesTitleFormat` in `defineBddConfig`.
+
 ### Good
 Scenario: User completes checkout
 	Given the user is logged in

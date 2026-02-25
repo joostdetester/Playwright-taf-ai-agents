@@ -12,6 +12,7 @@ This folder contains documentation and templates for prompts, testing guidelines
 Contents:
 
 - `agent-template.md` — template for documenting an agent (see below).
+- `video-to-test-readme.md` — stap-voor-stap workflow: video → prompt → feature/steps/POM → run.
 - `playwright-bdd-style.md` — style guide for Playwright BDD (if present).
 - `testing-guidelines.md` — testing practices and secrets handling.
 - `project-context.md` — project-level context (goals, constraints).

@@ -4,18 +4,36 @@ import { expect } from '@playwright/test';
 import mysql from 'mysql2/promise';
 import { projectConfig } from '../../config/project.config';
 import { World } from '../world';
+import { ensureDockerMysqlForDbTests } from './docker-mysql-bootstrap';
 
 let connection: mysql.Connection;
 let rows: any[] = [];
 
+async function createConnectionWithRetry() {
+  const maxAttempts = 30;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await mysql.createConnection({
+        host: projectConfig.db.host,
+        port: projectConfig.db.port ? Number(projectConfig.db.port) : undefined,
+        user: projectConfig.db.user,
+        password: projectConfig.db.password,
+        database: projectConfig.db.name,
+      });
+    } catch (err) {
+      lastError = err;
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+
+  throw lastError;
+}
+
 Given('the database is available', async function () {
-  connection = await mysql.createConnection({
-    host: projectConfig.db.host,
-    port: projectConfig.db.port ? Number(projectConfig.db.port) : undefined,
-    user: projectConfig.db.user,
-    password: projectConfig.db.password,
-    database: projectConfig.db.name,
-  });
+  await ensureDockerMysqlForDbTests(projectConfig.db);
+  connection = await createConnectionWithRetry();
 
   await connection.execute(`
     CREATE TABLE IF NOT EXISTS books (
@@ -53,13 +71,8 @@ Then('I can read the books from the database', async function () {
 });
 
 Given('the database contains books by {string}', async ({ world }, author: string) => {
-  const connection = await mysql.createConnection({
-    host: projectConfig.db.host,
-    port: projectConfig.db.port ? Number(projectConfig.db.port) : undefined,
-    user: projectConfig.db.user,
-    password: projectConfig.db.password,
-    database: projectConfig.db.name,
-  });
+  await ensureDockerMysqlForDbTests(projectConfig.db);
+  const connection = await createConnectionWithRetry();
 
   // Try to read existing books for the author
   let [rows] = await connection.execute(

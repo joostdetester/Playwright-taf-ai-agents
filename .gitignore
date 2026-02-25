@@ -8,3 +8,5 @@ playwright-report/
 .features-gen/
 
 .vscode/.env.agents
+artifacts/
+videos/
