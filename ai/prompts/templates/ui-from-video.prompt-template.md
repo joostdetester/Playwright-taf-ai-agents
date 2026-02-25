@@ -33,6 +33,8 @@ Instructions:
 - Assume Playwright + BDD style (see playwright-bdd-style.md)
 
 The generated prompt must include:
+- Valid YAML frontmatter at the very top of the file (first line must be `---`, not inside a code block)
+  - Required fields: `title`, `description`, `owner`, `tags`
 - Context
 - Goal
 - Flow description (business steps)

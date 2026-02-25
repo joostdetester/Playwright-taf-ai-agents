@@ -1,6 +1,9 @@
 ---
+title: UI checkout flow prompt (from video)
+description: Generate a UI checkout happy-flow test suite from a screen recording.
+owner: team-qa
+tags: [prompt, ui, e2e, video, playwright, bdd]
 name: green-kart-checkout
-description: Generate a UI checkout happy-flow test suite for GreenKart from a screen recording.
 ---
 
 ```prompt
