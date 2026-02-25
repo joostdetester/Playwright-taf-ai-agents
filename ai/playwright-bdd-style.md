@@ -34,12 +34,21 @@ Scenario: Click submit button
 	When I click the #submit button
 	Then the API returns 200
 
+
+## Principes voor consistente Playwright-BDD integratie (zoals Green Kart checkout)
+
+- Importeer Given/When/Then altijd uit een lokale bdd.ts (nooit direct uit @cucumber/cucumber)
+- Elke stap krijgt een context-object met `{ page, config }` (zoals Playwright test context)
+- Page Objects hebben een constructor met `page: Page` en gebruiken Playwright’s API direct
+- Volg de repo-conventies voor bestandsnamen en locaties (feature file, steps, page objects)
+- Gebruik alleen lokale dependencies, nooit globale Cucumber-installaties
+
 ## Step Definitions
-- Steps should call Page Object methods
-- all words should be lowercase, variables within the step can contain uppercase words
-- No locators inside step files
-- No assertions in Page Objects (assert in steps or helper assertions)
-- Keep step definitions small and readable
+ - Steps should call Page Object methods
+ - all words should be lowercase, variables within the step can contain uppercase words
+ - No locators inside step files
+ - No assertions in Page Objects (assert in steps or helper assertions)
+ - Keep step definitions small and readable
 
 ## Page Objects
 - Encapsulate selectors and UI actions

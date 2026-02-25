@@ -19,8 +19,8 @@ Dit document beschrijft de generieke workflow om op basis van een UI-screen reco
 
 ## Stap 1 — Plaats de video in de repo
 
-- Zet je screen recording onder de map `videos/`.
-- Gebruik een duidelijke naam, bijvoorbeeld: `videos/<flow-naam>.mp4`.
+- Zet je screen recording onder de map `specs/videos/`.
+- Gebruik een duidelijke naam, bijvoorbeeld: `specs/videos/<flow-naam>.mp4`.
 
 Tip: als je meerdere varianten hebt (desktop/mobile), zet dat in de bestandsnaam.
 
@@ -35,7 +35,7 @@ Gebruik het template:
 
 Gebruik een prompt in deze trant (houd het generiek):
 
-- Ik heb een video van een UI flow geüpload in `videos/<flow-naam>.mp4`.
+- Ik heb een video van een UI flow geüpload in `specs/videos/<flow-naam>.mp4`.
 - Gebruik het prompt template `ai/prompts/templates/ui-from-video.prompt-template.md`.
 - Genereer een nieuwe prompt voor deze flow.
 - Sla de prompt op als: `ai/prompts/e2e/<flow-naam>.prompt.md`.
