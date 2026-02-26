@@ -41,6 +41,8 @@ jobs:
           BASE_URL: https://rahulshettyacademy.com
           API_BASE_URL: https://rahulshettyacademy.com
           MCP_ENABLED: false
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           MYSQL_HOST: 127.0.0.1
           MYSQL_PORT: 3306
           MYSQL_USER: root

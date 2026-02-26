@@ -2,6 +2,15 @@
 
 Purpose: Minimal reusable Test Automation Framework template using Playwright, TypeScript, `playwright-bdd` (Gherkin feature files with Playwright runner), Allure reporting, and MCP agents scaffolding.
 
+CI status badges (per SUT)
+- Replace `<OWNER>/<REPO>` with your GitHub org/user and repo name.
+
+[![SUT letsshop](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-letsshop.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-letsshop.yml)
+[![SUT greenkart](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-greenkart.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-greenkart.yml)
+[![SUT petstore](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-petstore.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-petstore.yml)
+[![SUT bookstore](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-bookstore.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-bookstore.yml)
+[![SUT dashboard](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-dashboard.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/sut-dashboard.yml)
+
 Quick start
 - Copy `.env.example` to `.env` and set `BASE_URL`.
 - Install dependencies:
@@ -100,3 +109,8 @@ Security
 CI
 - GitHub Actions (`.github/workflows/ci.yml`) runs on pushes/PRs to `main`.
 - It executes `npm run bdd:dummy` and spins up a temporary MySQL service for DB feature tests.
+
+Per-SUT reporting (GitHub Pages)
+- Dedicated SUT workflows live under `.github/workflows/sut-*.yml` and run only one SUT suite.
+- Each workflow publishes a lightweight status page (counts + status + Allure link) to `gh-pages` under `sut/<sut>/`.
+- A central overview page is published under `sut/` (entry: `sut/index.html`).

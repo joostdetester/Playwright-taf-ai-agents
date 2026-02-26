@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUT Dashboard</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f4f6f8}
+    h1{margin:0 0 12px}
+    .meta{font-size:12px;color:#666;margin-bottom:16px}
+    .grid{display:flex;gap:12px;flex-wrap:wrap}
+    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);width:260px}
+    .card h2{margin:0 0 8px;font-size:16px}
+    .row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+    .count{font-size:28px;font-weight:700}
+    .ok{color:green}
+    .bad{color:#d9534f}
+    .unknown{color:#666}
+    a{color:#0366d6;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .links{margin-top:10px;font-size:13px}
+    .links a{margin-right:10px}
+    .small{font-size:12px;color:#666;word-break:break-word}
+    .summary{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+    .summary .box{background:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);min-width:160px}
+    .summary .label{font-size:12px;color:#666}
+    .summary .value{font-size:22px;font-weight:700}
+  </style>
+</head>
+<body>
+  <h1>SUT Overzicht</h1>
+  <div class="meta">Toont de laatste status per SUT (gegevens uit <code>sut/&lt;sut&gt;/summary.json</code>).</div>
+
+  <div class="summary">
+    <div class="box"><div class="label">Total tests</div><div class="value" id="agg-total">-</div></div>
+    <div class="box"><div class="label">Passed</div><div class="value ok" id="agg-passed">-</div></div>
+    <div class="box"><div class="label">Failed</div><div class="value bad" id="agg-failed">-</div></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const suts = ['letsshop','greenkart','petstore','bookstore'];
+    const grid = document.getElementById('grid');
+
+    function statusClass(status){
+      if (status === 'PASSED') return 'ok';
+      if (status === 'FAILED') return 'bad';
+      return 'unknown';
+    }
+
+    async function loadSummary(sut){
+      try{
+        const res = await fetch(`./${sut}/summary.json`, { cache: 'no-store' });
+        if(!res.ok) throw new Error('not found');
+        const j = await res.json();
+        return j;
+      }catch(e){
+        return null;
+      }
+    }
+
+    (async ()=>{
+      let aggTotal = 0, aggPassed = 0, aggFailed = 0;
+
+      for(const sut of suts){
+        const data = await loadSummary(sut);
+
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const h2 = document.createElement('h2');
+        h2.textContent = sut;
+        card.appendChild(h2);
+
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const total = document.createElement('div');
+        total.className = 'count';
+        total.textContent = data ? (data.total ?? 0) : '-';
+        row.appendChild(total);
+
+        const st = document.createElement('div');
+        const status = data ? String(data.status || 'UNKNOWN') : 'NO DATA';
+        st.textContent = status;
+        st.className = statusClass(status);
+        row.appendChild(st);
+
+        card.appendChild(row);
+
+        const meta = document.createElement('div');
+        meta.className = 'small';
+        if(!data){
+          meta.textContent = 'summary.json niet gevonden';
+        } else {
+          const passed = Number(data.passed ?? 0);
+          const failed = Number(data.failed ?? 0);
+          const skipped = Number(data.skipped ?? 0);
+          meta.textContent = `Passed: ${passed} • Failed: ${failed} • Skipped: ${skipped}`;
+          aggTotal += Number(data.total ?? 0);
+          aggPassed += passed;
+          aggFailed += failed;
+        }
+        card.appendChild(meta);
+
+        const links = document.createElement('div');
+        links.className = 'links';
+        links.innerHTML = `
+          <a href="./${sut}/">Status pagina</a>
+          <a href="./${sut}/allure/">Allure</a>
+          <a href="./${sut}/summary.json">summary.json</a>
+        `;
+        card.appendChild(links);
+
+        grid.appendChild(card);
+      }
+
+      document.getElementById('agg-total').textContent = aggTotal;
+      document.getElementById('agg-passed').textContent = aggPassed;
+      document.getElementById('agg-failed').textContent = aggFailed;
+    })();
+  </script>
+</body>
+</html>
