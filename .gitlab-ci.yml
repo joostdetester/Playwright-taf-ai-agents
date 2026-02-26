@@ -3,12 +3,13 @@ spec:
     Suite:
       default: "bookstore"
       options:
+        - all
         - bookstore
         - greenkart
         - letsshop
         - petstore
         - custom
-      description: "Suite selection (SUT tag). Use 'custom' to run only Custom_tags."
+      description: "Suite selection (SUT tag). Use 'all' to run all SUTs in parallel. Use 'custom' to run only Custom_tags."
     Custom_tags:
       default: "@all"
       description: "Gherkin tag expression. Default '@all'. Example: '@api and not @wip'."
@@ -46,6 +47,7 @@ cache:
   before_script:
     - node --version
     - npm --version
+    - mkdir -p allure-results test-results playwright-report
     - npm ci --prefer-offline --no-audit --progress=false
   artifacts:
     when: always
@@ -82,7 +84,8 @@ cache:
   extends: .suite_with_mysql
   script:
     - |
-      SUITE="$[[ inputs.Suite ]]"
+      # Allow per-job override (used for Suite=all fan-out).
+      SUITE="${SUT:-$[[ inputs.Suite ]]}"
       CUSTOM_TAGS="$[[ inputs.Custom_tags ]]"
       OMGEVING="$[[ inputs.Omgeving ]]"
 
@@ -131,19 +134,51 @@ cache:
       npx playwright test --reporter=list,allure-playwright ".features-gen/features"
 
 
-suite:
+suite:bookstore:
   extends: .tagged_suite
+  variables:
+    SUT: bookstore
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "bookstore" || "$[[ inputs.Suite ]]" == "all"'
 
-report:allure:
+suite:greenkart:
+  extends: .tagged_suite
+  variables:
+    SUT: greenkart
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "greenkart" || "$[[ inputs.Suite ]]" == "all"'
+
+suite:letsshop:
+  extends: .tagged_suite
+  variables:
+    SUT: letsshop
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "letsshop" || "$[[ inputs.Suite ]]" == "all"'
+
+suite:petstore:
+  extends: .tagged_suite
+  variables:
+    SUT: petstore
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "petstore" || "$[[ inputs.Suite ]]" == "all"'
+
+suite:custom:
+  extends: .tagged_suite
+  variables:
+    SUT: custom
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "custom"'
+
+report:allure:bookstore:
   extends: .default_suite
   stage: report
   needs:
-    - job: suite
+    - job: suite:bookstore
       artifacts: true
   rules:
-    - when: always
+    - if: '"$[[ inputs.Suite ]]" == "bookstore" || "$[[ inputs.Suite ]]" == "all"'
   cache:
-    key: "report-${CI_COMMIT_REF_SLUG}-$[[ inputs.Suite ]]-$[[ inputs.Omgeving ]]"
+    key: "report-${CI_COMMIT_REF_SLUG}-bookstore-$[[ inputs.Omgeving ]]"
     policy: pull-push
     paths:
       - .npm/
@@ -163,7 +198,7 @@ report:allure:
       fi
     - npm ci --prefer-offline --no-audit --progress=false
     - |
-      SUITE="$[[ inputs.Suite ]]"
+      SUITE="bookstore"
       OMGEVING="$[[ inputs.Omgeving ]]"
       REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
       REPORT_DIR="allure-report-${REPORT_TS}"
@@ -218,3 +253,308 @@ report:allure:
     paths:
       - allure-results/
       - allure-report-*/
+
+report:allure:greenkart:
+  extends: report:allure:bookstore
+  needs:
+    - job: suite:greenkart
+      artifacts: true
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "greenkart" || "$[[ inputs.Suite ]]" == "all"'
+  cache:
+    key: "report-${CI_COMMIT_REF_SLUG}-greenkart-$[[ inputs.Omgeving ]]"
+    policy: pull-push
+    paths:
+      - .npm/
+      - .allure-history/
+  script:
+    - node --version
+    - npm --version
+    - |
+      # Allure CLI requires Java. Playwright image typically doesn't include it.
+      if command -v java >/dev/null 2>&1; then
+        java -version
+      else
+        echo "Java not found; installing OpenJDK...";
+        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
+          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        java -version
+      fi
+    - npm ci --prefer-offline --no-audit --progress=false
+    - |
+      SUITE="greenkart"
+      OMGEVING="$[[ inputs.Omgeving ]]"
+      REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
+      REPORT_DIR="allure-report-${REPORT_TS}"
+
+      HISTORY_CACHE_DIR=".allure-history/${SUITE}/${OMGEVING}"
+      if [ -d "${HISTORY_CACHE_DIR}" ]; then
+        echo "Restoring Allure history from ${HISTORY_CACHE_DIR}";
+        mkdir -p allure-results/history
+        cp -R "${HISTORY_CACHE_DIR}/"* allure-results/history/ 2>/dev/null || true
+      else
+        echo "No previous Allure history found for ${SUITE}/${OMGEVING} (first run or cache miss).";
+      fi
+
+      echo "Generating Allure report into ${REPORT_DIR}";
+      mkdir -p "${REPORT_DIR}"
+      if ! npx allure generate allure-results --clean -o "${REPORT_DIR}"; then
+        echo "Allure report generation failed; creating placeholder index.html" >&2
+        printf '%s\n' \
+          '<!doctype html>' \
+          '<html lang="en">' \
+          '  <head>' \
+          '    <meta charset="utf-8" />' \
+          '    <meta name="viewport" content="width=device-width,initial-scale=1" />' \
+          '    <title>Allure report generation failed</title>' \
+          '  </head>' \
+          '  <body>' \
+          '    <h1>Allure report generation failed</h1>' \
+          '    <p>Check the job log for the Allure CLI error output. A Java runtime is required.</p>' \
+          '  </body>' \
+          '</html>' \
+          > "${REPORT_DIR}/index.html"
+      fi
+
+      mkdir -p "${HISTORY_CACHE_DIR}"
+      rm -rf "${HISTORY_CACHE_DIR}"/*
+      if [ -d "${REPORT_DIR}/history" ]; then
+        cp -R "${REPORT_DIR}/history/"* "${HISTORY_CACHE_DIR}/" 2>/dev/null || true
+        echo "Saved Allure history to ${HISTORY_CACHE_DIR}";
+      else
+        echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
+      fi
+
+      if [ -f "${REPORT_DIR}/index.html" ]; then
+        echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      else
+        echo "Allure report index.html not found in ${REPORT_DIR}; artifact link not available." >&2
+      fi
+
+report:allure:letsshop:
+  extends: report:allure:greenkart
+  needs:
+    - job: suite:letsshop
+      artifacts: true
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "letsshop" || "$[[ inputs.Suite ]]" == "all"'
+  cache:
+    key: "report-${CI_COMMIT_REF_SLUG}-letsshop-$[[ inputs.Omgeving ]]"
+    policy: pull-push
+    paths:
+      - .npm/
+      - .allure-history/
+  script:
+    - node --version
+    - npm --version
+    - |
+      if command -v java >/dev/null 2>&1; then
+        java -version
+      else
+        echo "Java not found; installing OpenJDK...";
+        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
+          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        java -version
+      fi
+    - npm ci --prefer-offline --no-audit --progress=false
+    - |
+      SUITE="letsshop"
+      OMGEVING="$[[ inputs.Omgeving ]]"
+      REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
+      REPORT_DIR="allure-report-${REPORT_TS}"
+
+      HISTORY_CACHE_DIR=".allure-history/${SUITE}/${OMGEVING}"
+      if [ -d "${HISTORY_CACHE_DIR}" ]; then
+        echo "Restoring Allure history from ${HISTORY_CACHE_DIR}";
+        mkdir -p allure-results/history
+        cp -R "${HISTORY_CACHE_DIR}/"* allure-results/history/ 2>/dev/null || true
+      else
+        echo "No previous Allure history found for ${SUITE}/${OMGEVING} (first run or cache miss).";
+      fi
+
+      echo "Generating Allure report into ${REPORT_DIR}";
+      mkdir -p "${REPORT_DIR}"
+      if ! npx allure generate allure-results --clean -o "${REPORT_DIR}"; then
+        echo "Allure report generation failed; creating placeholder index.html" >&2
+        printf '%s\n' \
+          '<!doctype html>' \
+          '<html lang="en">' \
+          '  <head>' \
+          '    <meta charset="utf-8" />' \
+          '    <meta name="viewport" content="width=device-width,initial-scale=1" />' \
+          '    <title>Allure report generation failed</title>' \
+          '  </head>' \
+          '  <body>' \
+          '    <h1>Allure report generation failed</h1>' \
+          '    <p>Check the job log for the Allure CLI error output. A Java runtime is required.</p>' \
+          '  </body>' \
+          '</html>' \
+          > "${REPORT_DIR}/index.html"
+      fi
+
+      mkdir -p "${HISTORY_CACHE_DIR}"
+      rm -rf "${HISTORY_CACHE_DIR}"/*
+      if [ -d "${REPORT_DIR}/history" ]; then
+        cp -R "${REPORT_DIR}/history/"* "${HISTORY_CACHE_DIR}/" 2>/dev/null || true
+        echo "Saved Allure history to ${HISTORY_CACHE_DIR}";
+      else
+        echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
+      fi
+
+      if [ -f "${REPORT_DIR}/index.html" ]; then
+        echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      else
+        echo "Allure report index.html not found in ${REPORT_DIR}; artifact link not available." >&2
+      fi
+
+report:allure:petstore:
+  extends: report:allure:greenkart
+  needs:
+    - job: suite:petstore
+      artifacts: true
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "petstore" || "$[[ inputs.Suite ]]" == "all"'
+  cache:
+    key: "report-${CI_COMMIT_REF_SLUG}-petstore-$[[ inputs.Omgeving ]]"
+    policy: pull-push
+    paths:
+      - .npm/
+      - .allure-history/
+  script:
+    - node --version
+    - npm --version
+    - |
+      if command -v java >/dev/null 2>&1; then
+        java -version
+      else
+        echo "Java not found; installing OpenJDK...";
+        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
+          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        java -version
+      fi
+    - npm ci --prefer-offline --no-audit --progress=false
+    - |
+      SUITE="petstore"
+      OMGEVING="$[[ inputs.Omgeving ]]"
+      REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
+      REPORT_DIR="allure-report-${REPORT_TS}"
+
+      HISTORY_CACHE_DIR=".allure-history/${SUITE}/${OMGEVING}"
+      if [ -d "${HISTORY_CACHE_DIR}" ]; then
+        echo "Restoring Allure history from ${HISTORY_CACHE_DIR}";
+        mkdir -p allure-results/history
+        cp -R "${HISTORY_CACHE_DIR}/"* allure-results/history/ 2>/dev/null || true
+      else
+        echo "No previous Allure history found for ${SUITE}/${OMGEVING} (first run or cache miss).";
+      fi
+
+      echo "Generating Allure report into ${REPORT_DIR}";
+      mkdir -p "${REPORT_DIR}"
+      if ! npx allure generate allure-results --clean -o "${REPORT_DIR}"; then
+        echo "Allure report generation failed; creating placeholder index.html" >&2
+        printf '%s\n' \
+          '<!doctype html>' \
+          '<html lang="en">' \
+          '  <head>' \
+          '    <meta charset="utf-8" />' \
+          '    <meta name="viewport" content="width=device-width,initial-scale=1" />' \
+          '    <title>Allure report generation failed</title>' \
+          '  </head>' \
+          '  <body>' \
+          '    <h1>Allure report generation failed</h1>' \
+          '    <p>Check the job log for the Allure CLI error output. A Java runtime is required.</p>' \
+          '  </body>' \
+          '</html>' \
+          > "${REPORT_DIR}/index.html"
+      fi
+
+      mkdir -p "${HISTORY_CACHE_DIR}"
+      rm -rf "${HISTORY_CACHE_DIR}"/*
+      if [ -d "${REPORT_DIR}/history" ]; then
+        cp -R "${REPORT_DIR}/history/"* "${HISTORY_CACHE_DIR}/" 2>/dev/null || true
+        echo "Saved Allure history to ${HISTORY_CACHE_DIR}";
+      else
+        echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
+      fi
+
+      if [ -f "${REPORT_DIR}/index.html" ]; then
+        echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      else
+        echo "Allure report index.html not found in ${REPORT_DIR}; artifact link not available." >&2
+      fi
+
+report:allure:custom:
+  extends: report:allure:greenkart
+  needs:
+    - job: suite:custom
+      artifacts: true
+  rules:
+    - if: '"$[[ inputs.Suite ]]" == "custom"'
+  cache:
+    key: "report-${CI_COMMIT_REF_SLUG}-custom-$[[ inputs.Omgeving ]]"
+    policy: pull-push
+    paths:
+      - .npm/
+      - .allure-history/
+  script:
+    - node --version
+    - npm --version
+    - |
+      if command -v java >/dev/null 2>&1; then
+        java -version
+      else
+        echo "Java not found; installing OpenJDK...";
+        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
+          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        java -version
+      fi
+    - npm ci --prefer-offline --no-audit --progress=false
+    - |
+      SUITE="custom"
+      OMGEVING="$[[ inputs.Omgeving ]]"
+      REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
+      REPORT_DIR="allure-report-${REPORT_TS}"
+
+      HISTORY_CACHE_DIR=".allure-history/${SUITE}/${OMGEVING}"
+      if [ -d "${HISTORY_CACHE_DIR}" ]; then
+        echo "Restoring Allure history from ${HISTORY_CACHE_DIR}";
+        mkdir -p allure-results/history
+        cp -R "${HISTORY_CACHE_DIR}/"* allure-results/history/ 2>/dev/null || true
+      else
+        echo "No previous Allure history found for ${SUITE}/${OMGEVING} (first run or cache miss).";
+      fi
+
+      echo "Generating Allure report into ${REPORT_DIR}";
+      mkdir -p "${REPORT_DIR}"
+      if ! npx allure generate allure-results --clean -o "${REPORT_DIR}"; then
+        echo "Allure report generation failed; creating placeholder index.html" >&2
+        printf '%s\n' \
+          '<!doctype html>' \
+          '<html lang="en">' \
+          '  <head>' \
+          '    <meta charset="utf-8" />' \
+          '    <meta name="viewport" content="width=device-width,initial-scale=1" />' \
+          '    <title>Allure report generation failed</title>' \
+          '  </head>' \
+          '  <body>' \
+          '    <h1>Allure report generation failed</h1>' \
+          '    <p>Check the job log for the Allure CLI error output. A Java runtime is required.</p>' \
+          '  </body>' \
+          '</html>' \
+          > "${REPORT_DIR}/index.html"
+      fi
+
+      mkdir -p "${HISTORY_CACHE_DIR}"
+      rm -rf "${HISTORY_CACHE_DIR}"/*
+      if [ -d "${REPORT_DIR}/history" ]; then
+        cp -R "${REPORT_DIR}/history/"* "${HISTORY_CACHE_DIR}/" 2>/dev/null || true
+        echo "Saved Allure history to ${HISTORY_CACHE_DIR}";
+      else
+        echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
+      fi
+
+      if [ -f "${REPORT_DIR}/index.html" ]; then
+        echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      else
+        echo "Allure report index.html not found in ${REPORT_DIR}; artifact link not available." >&2
+      fi
