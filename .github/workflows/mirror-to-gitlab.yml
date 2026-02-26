@@ -72,6 +72,16 @@ jobs:
 
           ssh-keyscan -t rsa,ed25519 gitlab.com >> ~/.ssh/known_hosts
 
+      - name: Diagnose SSH auth (GitLab)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Key fingerprint:" 
+          ssh-keygen -lf ~/.ssh/id_ed25519 || true
+          echo "Testing SSH authentication to gitlab.com:" 
+          # GitLab typically returns exit code 1 even on successful auth with a welcome message.
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -T git@gitlab.com || true
+
       - name: Add GitLab remote
         shell: bash
         run: |
