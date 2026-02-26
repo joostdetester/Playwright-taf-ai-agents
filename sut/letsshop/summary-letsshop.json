@@ -1,8 +1,14 @@
 {
   "suite": "letsshop",
-  "total": 0,
-  "passed": 0,
-  "failed": 0,
+  "total": 2,
+  "passed": 1,
+  "failed": 1,
   "skipped": 0,
-  "status": "UNKNOWN"
+  "failedTests": [
+    "user places an order for two products"
+  ],
+  "status": "FAILED",
+  "start": "2026-02-26T16:47:14.851Z",
+  "stop": "2026-02-26T16:47:24.995Z",
+  "durationMs": 10144
 }
