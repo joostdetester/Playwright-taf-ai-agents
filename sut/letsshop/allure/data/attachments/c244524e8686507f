@@ -1,0 +1,99 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - navigation [ref=e5]:
+      - generic [ref=e7]:
+        - link "Automation Automation Practice":
+          - /url: ""
+          - generic [ref=e8] [cursor=pointer]:
+            - heading "Automation" [level=3] [ref=e9]
+            - paragraph [ref=e10]: Automation Practice
+      - text: 
+      - list [ref=e11]:
+        - listitem [ref=e12] [cursor=pointer]:
+          - button " HOME" [ref=e13]:
+            - generic [ref=e14]: 
+            - text: HOME
+        - listitem
+        - listitem [ref=e15] [cursor=pointer]:
+          - button " ORDERS" [ref=e16]:
+            - generic [ref=e17]: 
+            - text: ORDERS
+        - listitem [ref=e18] [cursor=pointer]:
+          - button " Cart" [ref=e19]:
+            - generic [ref=e20]: 
+            - text: Cart
+        - listitem [ref=e21] [cursor=pointer]:
+          - button "Sign Out" [ref=e22]:
+            - generic [ref=e23]: 
+            - text: Sign Out
+    - table [ref=e25]:
+      - rowgroup [ref=e26]:
+        - row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 | Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e27]:
+          - cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 | Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e28]:
+            - table [ref=e29]:
+              - rowgroup [ref=e30]:
+                - row [ref=e31]:
+                  - cell [ref=e32]
+                - row [ref=e33]:
+                  - cell [ref=e34]
+                - row [ref=e35]:
+                  - cell [ref=e36]
+                - row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e37]:
+                  - cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e38]:
+                    - table [ref=e39]:
+                      - rowgroup [ref=e40]:
+                        - row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e41]:
+                          - cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e42]:
+                            - table [ref=e43]:
+                              - rowgroup [ref=e44]:
+                                - row "Thankyou for the order." [ref=e45]:
+                                  - cell "Thankyou for the order." [ref=e46]:
+                                    - heading "Thankyou for the order." [level=1] [ref=e47]
+                                - row "You can see all the Orders in Orders History Page" [ref=e48]:
+                                  - cell "You can see all the Orders in Orders History Page" [ref=e49]:
+                                    - text: You can see all the Orders in
+                                    - generic [ref=e50] [cursor=pointer]: Orders History Page
+                                - row "| 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e51]:
+                                  - cell "| 69a04ba40ab5a029774c88e4 | | 69a04ba40ab5a029774c88e7 |" [ref=e52]:
+                                    - generic [ref=e53]: "| 69a04ba40ab5a029774c88e4 |"
+                                    - generic [ref=e54]: "| 69a04ba40ab5a029774c88e7 |"
+                - row [ref=e55]:
+                  - cell [ref=e56]
+                - row "Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV" [ref=e57]:
+                  - cell "Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV" [ref=e58]:
+                    - table [ref=e59]:
+                      - rowgroup [ref=e60]:
+                        - row [ref=e61]:
+                          - cell [ref=e62]
+                        - row "Items in your order may ship separately. View your order for shipping updates." [ref=e63]:
+                          - cell "Items in your order may ship separately. View your order for shipping updates." [ref=e64]:
+                            - text: Items in your order may ship separately.
+                            - text: View your order for shipping updates.
+                        - row "Click To Download Order Details in CSV" [ref=e65]:
+                          - button "Click To Download Order Details in CSV" [ref=e66] [cursor=pointer]
+                - row [ref=e67]:
+                  - cell [ref=e68]
+                - row "Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e69]:
+                  - cell "Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e70]:
+                    - table [ref=e71]:
+                      - rowgroup [ref=e72]:
+                        - row [ref=e73]:
+                          - cell [ref=e74]
+                        - row "Questions? We're on call." [ref=e75]:
+                          - cell "Questions? We're on call." [ref=e76]
+                        - row "Monday to Friday 9am - 9pm" [ref=e77]:
+                          - cell "Monday to Friday 9am - 9pm" [ref=e78]
+                        - row "Saturday to Sunday 10am - 6pm" [ref=e79]:
+                          - cell "Saturday to Sunday 10am - 6pm" [ref=e80]
+                        - row "dummywebsite@rahulshettyacademy.com" [ref=e81]:
+                          - cell "dummywebsite@rahulshettyacademy.com" [ref=e82]: dummywebsite@rahulshettyacademy.com
+                        - row [ref=e83]:
+                          - cell [ref=e84]
+                - row [ref=e85]:
+                  - cell [ref=e86]
+                - row
+  - generic "Order Placed Successfully" [ref=e88]
+```
