@@ -231,3 +231,15 @@ jobs:
           publish_dir: ./site
           destination_dir: sut/greenkart
           keep_files: true
+
+      - name: Add Pages links to summary
+        if: always()
+        shell: bash
+        run: |
+          set -e
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          BASE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}/sut/${SUT}/"
+          echo "## SUT Pages links" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status page: ${BASE_URL}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Allure report: ${BASE_URL}allure/" >> "$GITHUB_STEP_SUMMARY"
+          echo "- summary.json: ${BASE_URL}summary.json" >> "$GITHUB_STEP_SUMMARY"
