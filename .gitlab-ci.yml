@@ -1,3 +1,26 @@
+spec:
+  inputs:
+    Suite:
+      default: "bookstore"
+      options:
+        - bookstore
+        - greenkart
+        - letsshop
+        - petstore
+        - custom
+      description: "Suite selection (SUT tag). Use 'custom' to run only Custom_tags."
+    Custom_tags:
+      default: "@all"
+      description: "Gherkin tag expression. Default '@all'. Example: '@api and not @wip'."
+    Omgeving:
+      default: "test"
+      options:
+        - test
+        - acc
+        - prod
+      description: "Environment (reserved for future use)."
+---
+
 image: mcr.microsoft.com/playwright:v1.44.0-jammy
 
 stages:
@@ -12,32 +35,6 @@ workflow:
 variables:
   MCP_ENABLED: "false"
   NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
-  Suite:
-    value: "bookstore"
-    options:
-      - bookstore
-      - greenkart
-      - letsshop
-      - petstore
-      - custom
-    description: "Suite selection (SUT tag). Use 'custom' to run only Custom_tags."
-  Custom_tags:
-    value: "@all"
-    options:
-      - "@all"
-      - "@api"
-      - "@db"
-      - "@e2e"
-      - "@smoke"
-      - "@ui"
-    description: "Gherkin tag expression. Default '@all'. Can be edited (e.g. '@api and not @wip')."
-  Omgeving:
-    value: "test"
-    options:
-      - test
-      - acc
-      - prod
-    description: "Environment (reserved for future use)."
 
 cache:
   key: "npm-${CI_COMMIT_REF_SLUG}"
@@ -85,9 +82,9 @@ cache:
   extends: .suite_with_mysql
   script:
     - |
-      SUITE="${Suite:-bookstore}"
-      CUSTOM_TAGS="${Custom_tags:-@all}"
-      OMGEVING="${Omgeving:-test}"
+      SUITE="$[[ inputs.Suite ]]"
+      CUSTOM_TAGS="$[[ inputs.Custom_tags ]]"
+      OMGEVING="$[[ inputs.Omgeving ]]"
 
       case "${SUITE}" in
         bookstore|greenkart|letsshop|petstore|custom) ;;
@@ -146,7 +143,7 @@ report:allure:
   rules:
     - when: always
   cache:
-    key: "report-${CI_COMMIT_REF_SLUG}-${Suite}-${Omgeving}"
+    key: "report-${CI_COMMIT_REF_SLUG}-$[[ inputs.Suite ]]-$[[ inputs.Omgeving ]]"
     policy: pull-push
     paths:
       - .npm/
@@ -156,8 +153,8 @@ report:allure:
     - npm --version
     - npm ci --prefer-offline --no-audit --progress=false
     - |
-      SUITE="${Suite:-bookstore}"
-      OMGEVING="${Omgeving:-test}"
+      SUITE="$[[ inputs.Suite ]]"
+      OMGEVING="$[[ inputs.Omgeving ]]"
       REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
       REPORT_DIR="allure-report-${REPORT_TS}"
 
