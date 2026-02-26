@@ -177,6 +177,7 @@ report:allure:bookstore:
       artifacts: true
   rules:
     - if: '"$[[ inputs.Suite ]]" == "bookstore" || "$[[ inputs.Suite ]]" == "all"'
+      when: always
   cache:
     key: "report-${CI_COMMIT_REF_SLUG}-bookstore-$[[ inputs.Omgeving ]]"
     policy: pull-push
@@ -261,6 +262,7 @@ report:allure:greenkart:
       artifacts: true
   rules:
     - if: '"$[[ inputs.Suite ]]" == "greenkart" || "$[[ inputs.Suite ]]" == "all"'
+      when: always
   cache:
     key: "report-${CI_COMMIT_REF_SLUG}-greenkart-$[[ inputs.Omgeving ]]"
     policy: pull-push
@@ -338,6 +340,7 @@ report:allure:letsshop:
       artifacts: true
   rules:
     - if: '"$[[ inputs.Suite ]]" == "letsshop" || "$[[ inputs.Suite ]]" == "all"'
+      when: always
   cache:
     key: "report-${CI_COMMIT_REF_SLUG}-letsshop-$[[ inputs.Omgeving ]]"
     policy: pull-push
@@ -414,6 +417,7 @@ report:allure:petstore:
       artifacts: true
   rules:
     - if: '"$[[ inputs.Suite ]]" == "petstore" || "$[[ inputs.Suite ]]" == "all"'
+      when: always
   cache:
     key: "report-${CI_COMMIT_REF_SLUG}-petstore-$[[ inputs.Omgeving ]]"
     policy: pull-push
@@ -490,6 +494,7 @@ report:allure:custom:
       artifacts: true
   rules:
     - if: '"$[[ inputs.Suite ]]" == "custom"'
+      when: always
   cache:
     key: "report-${CI_COMMIT_REF_SLUG}-custom-$[[ inputs.Omgeving ]]"
     policy: pull-push
