@@ -1,0 +1,118 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - navigation [ref=e5]:
+      - generic [ref=e7]:
+        - link "Automation Automation Practice":
+          - /url: ""
+          - generic [ref=e8] [cursor=pointer]:
+            - heading "Automation" [level=3] [ref=e9]
+            - paragraph [ref=e10]: Automation Practice
+      - text: 
+      - list [ref=e11]:
+        - listitem [ref=e12] [cursor=pointer]:
+          - button " HOME" [ref=e13]:
+            - generic [ref=e14]: 
+            - text: HOME
+        - listitem
+        - listitem [ref=e15] [cursor=pointer]:
+          - button " ORDERS" [ref=e16]:
+            - generic [ref=e17]: 
+            - text: ORDERS
+        - listitem [ref=e18] [cursor=pointer]:
+          - button " Cart" [ref=e19]:
+            - generic [ref=e20]: 
+            - text: Cart
+        - listitem [ref=e21] [cursor=pointer]:
+          - button "Sign Out" [ref=e22]:
+            - generic [ref=e23]: 
+            - text: Sign Out
+    - table [ref=e25]:
+      - rowgroup [ref=e26]:
+        - 'row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 | Queen ZARA COAT 3 Qty: 1 $ 11500 Ready to Ship Queen ADIDAS ORIGINAL Qty: 1 $ 11500 Ready to Ship Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV Questions? We''re on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e27]':
+          - 'cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 | Queen ZARA COAT 3 Qty: 1 $ 11500 Ready to Ship Queen ADIDAS ORIGINAL Qty: 1 $ 11500 Ready to Ship Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV Questions? We''re on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e28]':
+            - table [ref=e29]:
+              - rowgroup [ref=e30]:
+                - row [ref=e31]:
+                  - cell [ref=e32]
+                - row [ref=e33]:
+                  - cell [ref=e34]
+                - row [ref=e35]:
+                  - cell [ref=e36]
+                - row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e37]:
+                  - cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e38]:
+                    - table [ref=e39]:
+                      - rowgroup [ref=e40]:
+                        - row "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e41]:
+                          - cell "Thankyou for the order. You can see all the Orders in Orders History Page | 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e42]:
+                            - table [ref=e43]:
+                              - rowgroup [ref=e44]:
+                                - row "Thankyou for the order." [ref=e45]:
+                                  - cell "Thankyou for the order." [ref=e46]:
+                                    - heading "Thankyou for the order." [level=1] [ref=e47]
+                                - row "You can see all the Orders in Orders History Page" [ref=e48]:
+                                  - cell "You can see all the Orders in Orders History Page" [ref=e49]:
+                                    - text: You can see all the Orders in
+                                    - generic [ref=e50] [cursor=pointer]: Orders History Page
+                                - row "| 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e51]:
+                                  - cell "| 69a085a1415d779f9b448d50 | | 69a085a1415d779f9b448d53 |" [ref=e52]:
+                                    - generic [ref=e53]: "| 69a085a1415d779f9b448d50 |"
+                                    - generic [ref=e54]: "| 69a085a1415d779f9b448d53 |"
+                - row [ref=e55]:
+                  - cell [ref=e56]
+                - 'row "Queen ZARA COAT 3 Qty: 1 $ 11500 Ready to Ship Queen ADIDAS ORIGINAL Qty: 1 $ 11500 Ready to Ship Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV" [ref=e57]':
+                  - 'cell "Queen ZARA COAT 3 Qty: 1 $ 11500 Ready to Ship Queen ADIDAS ORIGINAL Qty: 1 $ 11500 Ready to Ship Items in your order may ship separately. View your order for shipping updates. Click To Download Order Details in CSV" [ref=e58]':
+                    - table [ref=e59]:
+                      - rowgroup [ref=e60]:
+                        - row [ref=e61]:
+                          - cell [ref=e62]
+                        - generic [ref=e63]:
+                          - 'row "Queen ZARA COAT 3 Qty: 1 $ 11500 Ready to Ship" [ref=e64]':
+                            - cell "Queen" [ref=e65]:
+                              - img "Queen" [ref=e66]
+                            - 'cell "ZARA COAT 3 Qty: 1" [ref=e67]':
+                              - generic [ref=e68]: ZARA COAT 3
+                              - generic [ref=e69]: "Qty: 1"
+                            - cell "$ 11500 Ready to Ship" [ref=e70]:
+                              - generic [ref=e71]: $ 11500
+                              - strong [ref=e73]: Ready to Ship
+                          - 'row "Queen ADIDAS ORIGINAL Qty: 1 $ 11500 Ready to Ship" [ref=e74]':
+                            - cell "Queen" [ref=e75]:
+                              - img "Queen" [ref=e76]
+                            - 'cell "ADIDAS ORIGINAL Qty: 1" [ref=e77]':
+                              - generic [ref=e78]: ADIDAS ORIGINAL
+                              - generic [ref=e79]: "Qty: 1"
+                            - cell "$ 11500 Ready to Ship" [ref=e80]:
+                              - generic [ref=e81]: $ 11500
+                              - strong [ref=e83]: Ready to Ship
+                        - row "Items in your order may ship separately. View your order for shipping updates." [ref=e84]:
+                          - cell "Items in your order may ship separately. View your order for shipping updates." [ref=e85]:
+                            - text: Items in your order may ship separately.
+                            - text: View your order for shipping updates.
+                        - row "Click To Download Order Details in CSV" [ref=e86]:
+                          - button "Click To Download Order Details in CSV" [ref=e87] [cursor=pointer]
+                - row [ref=e88]:
+                  - cell [ref=e89]
+                - row "Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e90]:
+                  - cell "Questions? We're on call. Monday to Friday 9am - 9pm Saturday to Sunday 10am - 6pm dummywebsite@rahulshettyacademy.com" [ref=e91]:
+                    - table [ref=e92]:
+                      - rowgroup [ref=e93]:
+                        - row [ref=e94]:
+                          - cell [ref=e95]
+                        - row "Questions? We're on call." [ref=e96]:
+                          - cell "Questions? We're on call." [ref=e97]
+                        - row "Monday to Friday 9am - 9pm" [ref=e98]:
+                          - cell "Monday to Friday 9am - 9pm" [ref=e99]
+                        - row "Saturday to Sunday 10am - 6pm" [ref=e100]:
+                          - cell "Saturday to Sunday 10am - 6pm" [ref=e101]
+                        - row "dummywebsite@rahulshettyacademy.com" [ref=e102]:
+                          - cell "dummywebsite@rahulshettyacademy.com" [ref=e103]: dummywebsite@rahulshettyacademy.com
+                        - row [ref=e104]:
+                          - cell [ref=e105]
+                - row [ref=e106]:
+                  - cell [ref=e107]
+                - row
+  - generic "Order Placed Successfully" [ref=e109]
+```
