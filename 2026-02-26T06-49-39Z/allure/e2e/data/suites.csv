@@ -1,0 +1,8 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","324","user places an order for two products","","2026-02-26","failed","2026-02-26","shopping cart checkout","features/e2e/shopping-cart-checkout.feature.spec.js","",""
+"","114","Add Pet and Update Pet then Get Pet by id","","2026-02-26","passed","2026-02-26","Petstore end-to-end tests","features/e2e/petstore.feature.spec.js","",""
+"","30197","API returns the same books as the database","","2026-02-26","broken","2026-02-26","Dummy feature - Database and API consistency","features/e2e/dummy-e2e.feature.spec.js","",""
+"","492","Add Pet and Get Pet by id","","2026-02-26","passed","2026-02-26","Petstore end-to-end tests","features/e2e/petstore.feature.spec.js","",""
+"","30193","API returns the same books as the database for author ""John Doe""","","2026-02-26","broken","2026-02-26","Get books by author (end-to-end) > API returns the same books as the database for author ""<author>""","features/e2e/get-books-by-author.feature.spec.js","",""
+"","127","Add Pet, Get Pet, Delete Pet and confirm not found","","2026-02-26","passed","2026-02-26","Petstore end-to-end tests","features/e2e/petstore.feature.spec.js","",""
+"","30207","API returns the same books as the database for author ""Rahul Shetty""","","2026-02-26","broken","2026-02-26","Get books by author (end-to-end) > API returns the same books as the database for author ""<author>""","features/e2e/get-books-by-author.feature.spec.js","",""
