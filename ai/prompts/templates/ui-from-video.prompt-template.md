@@ -20,9 +20,14 @@ Generate a NEW prompt file that can later be used to generate:
 3. Page Objects
 
 Input:
+- Video: `specs/<sut>/videos/<flow-name>.mp4`
 - The user provides:
   - A screen recording (or screenshots) of a happy flow
   - Optionally a short textual explanation of the business flow
+
+Naming (important):
+- Use kebab-case for `<flow-name>` / `<scenario-name>` (lowercase words separated by `-`).
+- Do not use spaces in filenames.
 
 Instructions:
 - Use the video only to understand the user journey and business flow
@@ -54,4 +59,10 @@ Constraints:
  - Steps must be written in English and be specific (avoid vague/generic step text)
 
 Output:
-- A new prompt file in: ai/prompts/e2e/<scenario-name>.prompt.md
+- A new prompt file in: `ai/prompts/e2e/<scenario-name>.prompt.md`
+
+Output file locations (conventions):
+- Feature file: `features/<sut>/{api,db,ui,e2e}/**/<scenario-name>.feature`
+- Step definitions: `steps/<sut>/{api,db,ui,e2e}/**/<scenario-name>.steps.ts`
+- Page Objects: `pageobjects/<sut>/**`
+- Supporting specs/artifacts: `specs/<sut>/**`

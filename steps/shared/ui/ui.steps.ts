@@ -1,6 +1,6 @@
 // steps/ui/ui.steps.ts
-import { Given, Then, When } from '../bdd';
-import { openApplication, assertHomepageTitle, openApplicationPath, assertCurrentUrlContains } from '../../ui/pages/uiActions';
+import { Given, Then, When } from '../../bdd';
+import { openApplication, assertHomepageTitle, openApplicationPath, assertCurrentUrlContains } from '../../../pageobjects/_shared/uiActions';
 
 Given('I open the application', async ({ page, config, world, $testInfo }) => {
   await openApplication({

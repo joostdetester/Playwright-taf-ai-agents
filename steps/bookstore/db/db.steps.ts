@@ -1,9 +1,9 @@
 // steps/db/db.steps.ts
-import { Given, When, Then } from '../bdd';
+import { Given, When, Then } from '../../bdd';
 import { expect } from '@playwright/test';
 import mysql from 'mysql2/promise';
-import { projectConfig } from '../../config/project.config';
-import { World } from '../world';
+import { projectConfig } from '../../../config/project.config';
+import { World } from '../../world';
 import { ensureDockerMysqlForDbTests } from './docker-mysql-bootstrap';
 
 let connection: mysql.Connection;

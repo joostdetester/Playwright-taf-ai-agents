@@ -1,7 +1,7 @@
-import { Given, When, Then } from '../bdd';
+import { Given, When, Then } from '../../bdd';
 import { expect } from '@playwright/test';
 import { APIRequestContext } from '@playwright/test';
-import { petstoreConfig } from '../../config/petstore.config';
+import { petstoreConfig } from '../../../config/petstore.config';
 import SwaggerParser from '@apidevtools/swagger-parser';
 
 let validatePet: ((data: any) => boolean) | null = null;

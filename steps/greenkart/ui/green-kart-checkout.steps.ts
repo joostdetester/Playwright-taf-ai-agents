@@ -1,8 +1,8 @@
-import { Given, Then, When } from '../bdd';
-import { GreenKartProductsPage } from '../../ui/pages/green-kart-products.page';
-import { GreenKartCartPage } from '../../ui/pages/green-kart-cart.page';
-import { GreenKartCheckoutPage } from '../../ui/pages/green-kart-checkout.page';
-import { GreenKartConfirmationPage } from '../../ui/pages/green-kart-confirmation.page';
+import { Given, Then, When } from '../../bdd';
+import { GreenKartProductsPage } from '../../../pageobjects/greenkart/green-kart-products.page';
+import { GreenKartCartPage } from '../../../pageobjects/greenkart/green-kart-cart.page';
+import { GreenKartCheckoutPage } from '../../../pageobjects/greenkart/green-kart-checkout.page';
+import { GreenKartConfirmationPage } from '../../../pageobjects/greenkart/green-kart-confirmation.page';
 
 Given('the user is on the greenkart products page', async ({ page, config }) => {
   const productsPage = new GreenKartProductsPage(page);

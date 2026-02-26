@@ -34,10 +34,13 @@ How it works
 
 Configuration
 - `config/project.config.ts` reads `.env` using `dotenv` and validates using `zod`.
+- SUT-specific config modules live in `config/<sut>.config.ts` (e.g. `config/letsshop.config.ts`, `config/greenkart.config.ts`, `config/petstore.config.ts`, `config/bookstore.config.ts`).
+	- Keep shared concerns (env loading, defaults, DB, MCP) in `project.config.ts`.
+	- Keep per-SUT concerns (routes, spec paths, expected UI text) in the SUT config module.
 - Do not commit secrets. Use `.env` locally and GitHub Secrets/Variables in CI.
 
 Architecture rules
-- UI steps must only use `page-objects` (root) and page action helpers.
+- UI steps must only use `pageobjects` (root) and page action helpers.
 - API steps must only use `api/clients`.
 - DB steps must only use `db/repositories`.
 - Cross-layer usage should be explicit in Gherkin and reviewed.

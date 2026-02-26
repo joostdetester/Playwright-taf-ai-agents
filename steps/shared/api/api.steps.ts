@@ -1,8 +1,8 @@
 // steps/api/api.steps.ts
-import { Given, When, Then } from '../bdd';
+import { Given, When, Then } from '../../bdd';
 import { expect } from '@playwright/test';
 import { APIRequestContext } from '@playwright/test';
-import { projectConfig } from '../../config/project.config';
+import { projectConfig } from '../../../config/project.config';
 
 let lastResponse: any;
 

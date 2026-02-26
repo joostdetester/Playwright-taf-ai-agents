@@ -1,6 +1,6 @@
 ---
 title: Automation practice page (from video)
-description: Generate Playwright-BDD feature/steps/page objects for the UI flow captured in specs/videos/practice-page.mp4 (Rahul Shetty Academy AutomationPractice)
+description: Generate Playwright-BDD feature/steps/page objects for the UI flow captured in specs/letsshop/videos/practice-page.mp4 (Rahul Shetty Academy AutomationPractice)
 owner: team-qa
 tags: [prompt, ui, video, playwright, bdd, e2e, practice]
 ---
@@ -15,7 +15,7 @@ We test a web application using:
 - TypeScript
 
 Input video:
-- `specs/videos/practice-page.mp4`
+- `specs/letsshop/videos/practice-page.mp4`
 
 The application shown in the video is the Rahul Shetty Academy "AutomationPractice" page (a UI playground page with form inputs, autocomplete, alerts, tables, and an embedded iframe).
 
@@ -124,8 +124,8 @@ Generate files to these locations (create folders if needed):
 - Step definitions:
   - `steps/e2e/practice-page.steps.ts`
 - Page Objects:
-  - `ui/pages/practice.page.ts`
-  - (optional) `ui/pages/academy.page.ts` (only if the new tab/window needs its own page object)
+  - `pageobjects/letsshop/practice.page.ts`
+  - (optional) `pageobjects/letsshop/academy.page.ts` (only if the new tab/window needs its own page object)
 
 ## Implementation notes for the code generator
 - Use a shared `bdd.ts` import for Given/When/Then (never import directly from `@cucumber/cucumber`).

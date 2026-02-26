@@ -84,10 +84,10 @@ Constraints:
 Output file locations:
 - features/ui/green-kart-checkout.feature
 - steps/ui/green-kart-checkout.steps.ts
-- ui/pages/green-kart-products.page.ts
-- ui/pages/green-kart-cart.page.ts
-- ui/pages/green-kart-checkout.page.ts
-- ui/pages/green-kart-confirmation.page.ts
+- pageobjects/greenkart/green-kart-products.page.ts
+- pageobjects/greenkart/green-kart-cart.page.ts
+- pageobjects/greenkart/green-kart-checkout.page.ts
+- pageobjects/greenkart/green-kart-confirmation.page.ts
 
 Notes:
 - The feature should use meaningful tags, e.g. @ui @checkout @green-kart.

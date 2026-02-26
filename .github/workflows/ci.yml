@@ -41,11 +41,11 @@ jobs:
           BASE_URL: https://rahulshettyacademy.com
           API_BASE_URL: https://rahulshettyacademy.com
           MCP_ENABLED: false
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: root
-          DB_NAME: rahulshettyacademy
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+          MYSQL_DATABASE: rahulshettyacademy
         run: |
           npm run bdd:dummy
       # Example: to enable MCP servers and inject secrets from GitHub Secrets,

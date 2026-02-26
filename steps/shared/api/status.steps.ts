@@ -1,4 +1,4 @@
-import { Then } from '../bdd';
+import { Then } from '../../bdd';
 import { expect } from '@playwright/test';
 
 Then('the API response status should be {int}', async ({ world }, status: number) => {

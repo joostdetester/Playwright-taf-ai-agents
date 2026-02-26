@@ -7,7 +7,7 @@
     "bddgen": "npx bddgen",
     "test": "npm run bdd",
     "bdd": "npm run bddgen && npx playwright test --reporter=list,allure-playwright",
-    "bdd:dummy": "npm run bdd -- features/api/dummy-api.feature features/ui/dummy-ui.feature features/db/dummy-db.feature features/e2e/dummy-e2e.feature",
+    "bdd:dummy": "npm run bdd -- features/bookstore/api/bookstore-api-tests.feature.spec.js features/bookstore/ui/bookstore-ui-tests.feature.spec.js features/bookstore/db/bookstore-get-books-from-database.feature.spec.js",
     "mcp:filesystem": "npx -y @modelcontextprotocol/server-filesystem \"C:/Users/joost/OneDrive/Documenten/Projects\"",
     "mcp:playwright": "npx @playwright/mcp@latest",
     "mcp:rest": "node C:/Users/joost/AppData/Roaming/npm/node_modules/dkmaker-mcp-rest-api/build/index.js",

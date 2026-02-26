@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
-import { Given, Then, When } from '../bdd';
-import { LoginPage } from '../../ui/pages/login.page';
-import { DashboardPage } from '../../ui/pages/dashboard.page';
-import { CartPage } from '../../ui/pages/cart.page';
-import { CheckoutPage } from '../../ui/pages/checkout.page';
-import { OrderConfirmationPage } from '../../ui/pages/order-confirmation.page';
+import { Given, Then, When } from '../../bdd';
+import { LoginPage } from '../../../pageobjects/letsshop/login.page';
+import { DashboardPage } from '../../../pageobjects/letsshop/dashboard.page';
+import { CartPage } from '../../../pageobjects/letsshop/cart.page';
+import { CheckoutPage } from '../../../pageobjects/letsshop/checkout.page';
+import { OrderConfirmationPage } from '../../../pageobjects/letsshop/order-confirmation.page';
 
 function getRequiredEnv(name: string): string {
   const value = process.env[name];

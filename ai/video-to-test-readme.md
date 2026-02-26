@@ -19,7 +19,13 @@ This document describes the generic workflow to create a new automated test in t
 
 ## Step 1 — Add the video to the repo
 
-- Use a clear name, for example: `specs/videos/<flow-name>.mp4`.
+- Use a clear name, for example: `specs/<sut>/videos/<flow-name>.mp4`.
+
+Naming rule (important):
+- Use **kebab-case** for `<flow-name>` (lowercase words separated by `-`).
+- Do **not** use spaces in filenames.
+
+Why: on Windows/PowerShell and when using nested `npm run ...` scripts, filenames with spaces can be split into multiple CLI arguments and cause errors like “No tests found”.
 
 Tip: if you have multiple variants (desktop/mobile), include that in the file name.
 
@@ -36,7 +42,7 @@ Important: the generated prompt itself must be written in English. The resulting
 
 Use a prompt along these lines (keep it generic):
 
-- I uploaded a video of a UI flow in `specs/videos/<flow-name>.mp4`.
+- I uploaded a video of a UI flow in `specs/<sut>/videos/<flow-name>.mp4`.
 - Use the prompt template `ai/prompts/templates/ui-from-video.prompt-template.md`.
 - Generate a new prompt for this flow.
 - Save the prompt as: `ai/prompts/e2e/<flow-name>.prompt.md`.
@@ -68,9 +74,9 @@ Goal of this step: have the agent/codegen create the actual test artifacts.
 ### Conventions (expected output locations)
 
 Use these repository conventions:
-- Feature file: `features/**/<flow-name>.feature`
-- Step definitions: `steps/**/<flow-name>.steps.ts`
-- Page Objects: `ui/pages/**` (e.g. 1 page per screen)
+- Feature file: `features/<sut>/{api,db,ui,e2e}/**/<flow-name>.feature`
+- Step definitions: `steps/<sut>/{api,db,ui,e2e}/**/<flow-name>.steps.ts`
+- Page Objects: `pageobjects/<sut>/**` (e.g. 1 page per screen)
 
 Important:
 - Keep step files “thin”: mostly call Page Object methods.
@@ -104,7 +110,8 @@ npm run bdd
 ### Option B: run one feature file
 
 ```powershell
-npm run bdd -- features/<path>/<flow-name>.feature
+# Playwright runs the generated spec file, not the .feature file.
+npm run bdd -- .features-gen/features/<sut>/{api,db,ui,e2e}/**/<flow-name>.feature.spec.js
 ```
 
 ### Option C: debug headed

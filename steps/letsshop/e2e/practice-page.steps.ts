@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test';
-import { Given, Then, When } from '../bdd';
-import { PracticePage } from '../../ui/pages/practice.page';
-import { AcademyPage } from '../../ui/pages/academy.page';
+import { Given, Then, When } from '../../bdd';
+import { PracticePage } from '../../../pageobjects/letsshop/practice.page';
+import { AcademyPage } from '../../../pageobjects/letsshop/academy.page';
 
 type PracticeWorld = {
   practiceRelatedPage?: Page;

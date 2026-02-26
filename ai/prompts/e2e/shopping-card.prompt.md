@@ -1,6 +1,6 @@
 ---
 title: Shopping cart checkout (from video)
-description: Generate Playwright-BDD feature/steps/page objects for the shopping cart + checkout happy flow captured in specs/videos/Shopping card.mp4
+description: Generate Playwright-BDD feature/steps/page objects for the shopping cart + checkout happy flow captured in specs/letsshop/videos/shopping-card.mp4
 owner: team-qa
 tags: [prompt, ui, video, playwright, bdd, e2e, cart, checkout]
 ---
@@ -15,7 +15,7 @@ We test a web application using:
 - TypeScript
 
 Input video:
-- `specs/videos/Shopping card.mp4`
+- `specs/letsshop/videos/shopping-card.mp4`
 
 The application shown in the video is a demo e-commerce site (Rahul Shetty Academy automation practice). The flow starts from a login screen, proceeds to a product listing/dashboard, then the cart, checkout, and an order confirmation page.
 
@@ -137,11 +137,11 @@ Generate files to these locations (create folders if needed):
 - Step definitions:
   - `steps/e2e/shopping-cart-checkout.steps.ts`
 - Page Objects:
-  - `ui/pages/login.page.ts`
-  - `ui/pages/dashboard.page.ts`
-  - `ui/pages/cart.page.ts`
-  - `ui/pages/checkout.page.ts`
-  - `ui/pages/order-confirmation.page.ts`
+  - `pageobjects/letsshop/login.page.ts`
+  - `pageobjects/letsshop/dashboard.page.ts`
+  - `pageobjects/letsshop/cart.page.ts`
+  - `pageobjects/letsshop/checkout.page.ts`
+  - `pageobjects/letsshop/order-confirmation.page.ts`
 
 ## Implementation notes for the code generator
 - Use a shared `bdd.ts` import for Given/When/Then (never import directly from `@cucumber/cucumber`).
