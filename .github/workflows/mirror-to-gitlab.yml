@@ -90,6 +90,15 @@ jobs:
           git remote remove gitlab 2>/dev/null || true
           git remote add gitlab "${GITLAB_REPO_SSH}"
 
+      - name: Debug GitLab remote
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "GITLAB_REPO_SSH=${GITLAB_REPO_SSH}"
+          git remote -v
+          echo "Checking remote visibility (git ls-remote)..."
+          git ls-remote gitlab HEAD || true
+
       - name: Push main + tags to GitLab
         shell: bash
         run: |
