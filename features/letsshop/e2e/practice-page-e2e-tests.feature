@@ -1,4 +1,4 @@
-@e2e @ui @practice
+@all @letsshop @e2e @ui @practice
 Feature: Practice page end-to-end tests
 
   Scenario: user completes the practice page flow

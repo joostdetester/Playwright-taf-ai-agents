@@ -111,19 +111,45 @@ CI
 - It executes `npm run bdd:dummy` and spins up a temporary MySQL service for DB feature tests.
 
 GitLab CI
-- Pipelines are configured in `.gitlab-ci.yml` with one job per SUT suite.
-- Required GitLab CI/CD variables (Project → Settings → CI/CD → Variables):
+- Pipelines are configured in `.gitlab-ci.yml` and run suites purely by Gherkin tags (`npx bddgen test --tags "<expr>"`).
+
+- Required GitLab CI/CD variables (Project → Settings → CI/CD → Variables) for the `letsshop` suite:
 	- `TEST_USER_EMAIL`
 	- `TEST_USER_PASSWORD`
-- MySQL is started as a CI service container for DB-enabled suites (letsshop/greenkart/bookstore).
 
-GitLab pipelines (per SUT)
-- Run all suites: just run a normal pipeline (push/MR) without extra variables.
-- Run one suite: start a pipeline with variable `SUT` set to one of: `letsshop`, `greenkart`, `bookstore`, `petstore`.
+Feature tags
+- Every feature has `@all`.
+- Every feature has its SUT tag: `@bookstore`, `@greenkart`, `@letsshop`, `@petstore`.
+- Feature type tags come from the folder: `@api`, `@ui`, `@db`, `@e2e`.
 
-GitLab pipeline (by tag)
-- Start a pipeline with variable `TAGS` set to a Gherkin tag expression (e.g. `@smoke and not @wip`).
-- Optional: also set `SUT` to limit to one SUT.
+GitLab pipeline variables
+- `Suite` (dropdown): `bookstore | greenkart | letsshop | petstore | custom`.
+- `Custom_tags` (default `@all`): tag expression like `@api`, `@bookstore and @db`, `@smoke and not @wip`.
+- `Omgeving` (dropdown): `test | acc | prod` (reserved for future use).
+
+- MySQL is started as a CI service container for DB-enabled suites.
+
+GitLab pipelines (examples)
+- Bookstore, everything: `Suite=bookstore`, `Custom_tags=@all` → runs `@bookstore and @all`.
+- Bookstore DB only: `Suite=bookstore`, `Custom_tags=@db` → runs `@bookstore and @db`.
+- Custom tag only: `Suite=custom`, `Custom_tags=@api` → runs `@api`.
+
+GitLab reporting (Allure)
+- The pipeline has a separate `report` stage job (`report:allure`) that generates a timestamped Allure report directory (`allure-report-<UTC timestamp>`).
+- The job prints a direct artifact link to `index.html` in the job log.
+- Artifacts expire after 14 days.
+
+Allure History tab (per test)
+- The `report:allure` job restores the previous run's Allure `history/` (scoped per `Suite` + `Omgeving`) into `allure-results/history` before generating the new report.
+- After generation it saves the newly produced `history/` back into a GitLab cache folder (`.allure-history/<suite>/<omgeving>`).
+- On the first run (or if a cache miss happens) the History tab will be empty until a second run exists.
+
+Allure metadata (why it adds value)
+- During execution we map Playwright/Gherkin tags to Allure:
+	- All tags become Allure tags (easy filtering in the Allure UI).
+	- SUT tag (`@bookstore`, `@greenkart`, `@letsshop`, `@petstore`) becomes Allure `epic` + label `sut`.
+	- Type tag (`@api`, `@ui`, `@db`, `@e2e`) becomes Allure `feature` + label `type`.
+	- `@critical` maps to severity `critical`, `@smoke` maps to severity `normal`.
 
 Per-SUT reporting (GitHub Pages)
 - Dedicated SUT workflows live under `.github/workflows/sut-*.yml` and run only one SUT suite.

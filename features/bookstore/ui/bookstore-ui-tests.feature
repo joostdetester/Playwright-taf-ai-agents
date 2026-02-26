@@ -1,4 +1,4 @@
-@ui @smoke @st
+@all @bookstore @ui @smoke @st
 Feature: Dummy UI feature
 
   

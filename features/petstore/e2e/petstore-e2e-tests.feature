@@ -1,4 +1,4 @@
-@e2e @api @critical @petstore
+@all @petstore @e2e @api @critical
 Feature: Petstore end-to-end tests
 
   Scenario: Add Pet and Get Pet by id

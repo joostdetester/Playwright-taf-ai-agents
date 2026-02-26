@@ -1,4 +1,4 @@
-@api @spec @petstore
+@all @petstore @api @spec
 Feature: Petstore Swagger validation
 
   Scenario: Validate Petstore spec

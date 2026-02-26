@@ -1,4 +1,4 @@
-@ui @checkout @green-kart
+@all @greenkart @ui @checkout @green-kart
 Feature: greenkart checkout
 
 	Scenario: user places an order for multiple vegetables

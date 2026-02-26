@@ -1,4 +1,4 @@
-@api @smoke @st
+@all @bookstore @api @smoke @st
 Feature: Dummy API feature
 
     Scenario: Get books from library API

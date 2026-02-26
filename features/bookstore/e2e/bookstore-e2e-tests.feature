@@ -1,4 +1,4 @@
-@e2e @db @api @critical
+@all @bookstore @e2e @db @api @critical
 Feature: Bookstore end-to-end tests
   In order to ensure the API and database remain consistent
   As a QA engineer

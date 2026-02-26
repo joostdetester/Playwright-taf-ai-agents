@@ -2,6 +2,7 @@ image: mcr.microsoft.com/playwright:v1.44.0-jammy
 
 stages:
   - test
+  - report
 
 workflow:
   rules:
@@ -11,10 +12,32 @@ workflow:
 variables:
   MCP_ENABLED: "false"
   NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
-  # Optional: limit to one SUT. Examples: letsshop | greenkart | bookstore | petstore
-  SUT: ""
-  # Optional: Gherkin tag expression for generation filtering. Example: "@smoke and not @wip"
-  TAGS: ""
+  Suite:
+    value: "bookstore"
+    options:
+      - bookstore
+      - greenkart
+      - letsshop
+      - petstore
+      - custom
+    description: "Suite selection (SUT tag). Use 'custom' to run only Custom_tags."
+  Custom_tags:
+    value: "@all"
+    options:
+      - "@all"
+      - "@api"
+      - "@db"
+      - "@e2e"
+      - "@smoke"
+      - "@ui"
+    description: "Gherkin tag expression. Default '@all'. Can be edited (e.g. '@api and not @wip')."
+  Omgeving:
+    value: "test"
+    options:
+      - test
+      - acc
+      - prod
+    description: "Environment (reserved for future use)."
 
 cache:
   key: "npm-${CI_COMMIT_REF_SLUG}"
@@ -32,10 +55,8 @@ cache:
     expire_in: 14 days
     paths:
       - allure-results/
-      - allure-report/
       - test-results/
       - playwright-report/
-      - summary-*.json
 
 .suite_with_mysql:
   extends: .default_suite
@@ -64,109 +85,108 @@ cache:
   extends: .suite_with_mysql
   script:
     - |
-      if [ -z "${TAGS:-}" ]; then
-        echo "Missing GitLab CI/CD variable TAGS (example: @smoke and not @wip)" >&2
-        exit 1
+      SUITE="${Suite:-bookstore}"
+      CUSTOM_TAGS="${Custom_tags:-@all}"
+      OMGEVING="${Omgeving:-test}"
+
+      case "${SUITE}" in
+        bookstore|greenkart|letsshop|petstore|custom) ;;
+        *) echo "Invalid SUITE='${SUITE}'. Allowed: bookstore|greenkart|letsshop|petstore|custom" >&2; exit 1 ;;
+      esac
+
+      case "${OMGEVING}" in
+        test|acc|prod) ;;
+        *) echo "Invalid OMGEVING='${OMGEVING}'. Allowed: test|acc|prod" >&2; exit 1 ;;
+      esac
+
+      if [ -z "${CUSTOM_TAGS}" ]; then
+        CUSTOM_TAGS="@all"
       fi
-    - |
-      # If SUT is provided, run only that SUT directory; otherwise run all generated suites.
-      TARGET_DIR=".features-gen/features"
-      if [ -n "${SUT:-}" ]; then
-        TARGET_DIR=".features-gen/features/${SUT}"
+
+      TAG_EXPR="${CUSTOM_TAGS}"
+      if [ "${SUITE}" != "custom" ]; then
+        TAG_EXPR="@${SUITE} and ${CUSTOM_TAGS}"
       fi
-      echo "Generating tests with TAGS=${TAGS}";
-      npx bddgen test --tags "${TAGS}"
-      # Require UI creds unless explicitly running petstore-only.
-      if [ "${SUT:-}" != "petstore" ]; then
+
+      # Base URL defaults for non-custom suites.
+      if [ "${SUITE}" = "petstore" ]; then
+        export BASE_URL="https://petstore.swagger.io"
+        export API_BASE_URL="https://petstore.swagger.io/v2"
+      elif [ "${SUITE}" != "custom" ]; then
+        export BASE_URL="https://rahulshettyacademy.com"
+        export API_BASE_URL="https://rahulshettyacademy.com"
+      fi
+
+      echo "SUITE=${SUITE}";
+      echo "OMGEVING=${OMGEVING}";
+      echo "TAG_EXPR=${TAG_EXPR}";
+
+      npx bddgen test --tags "${TAG_EXPR}"
+
+      # Safe mode: if the selected tags generate any letsshop specs, credentials must be present.
+      if find ".features-gen/features/letsshop" -type f -name "*.spec.js" -print -quit 2>/dev/null | grep -q .; then
         if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
-          echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD" >&2
+          echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD (required for generated letsshop UI specs)" >&2
           exit 1
         fi
       fi
-      npx playwright test --reporter=list,allure-playwright "${TARGET_DIR}"
-      node scripts/generate-summary.js --suite=${SUT:-tagged} --out=summary-${SUT:-tagged}.json || true
-      npm run allure:generate
 
-tagged:
+      npx playwright test --reporter=list,allure-playwright ".features-gen/features"
+
+
+suite:
   extends: .tagged_suite
-  rules:
-    - if: $TAGS != ""
 
-sut:letsshop:
-  extends: .suite_with_mysql
-  variables:
-    SUT: letsshop
-    BASE_URL: https://rahulshettyacademy.com
-    API_BASE_URL: https://rahulshettyacademy.com
-  script:
-    - |
-      if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
-        echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD" >&2
-        exit 1
-      fi
-    - npm run bdd -- .features-gen/features/${SUT}
-    - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
-    - npm run allure:generate
-  rules:
-    - if: $TAGS != ""
-      when: never
-    - if: $SUT == "letsshop"
-    - if: $SUT == "" 
-
-sut:greenkart:
-  extends: .suite_with_mysql
-  variables:
-    SUT: greenkart
-    BASE_URL: https://rahulshettyacademy.com
-    API_BASE_URL: https://rahulshettyacademy.com
-  script:
-    - |
-      if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
-        echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD" >&2
-        exit 1
-      fi
-    - npm run bdd -- .features-gen/features/${SUT}
-    - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
-    - npm run allure:generate
-  rules:
-    - if: $TAGS != ""
-      when: never
-    - if: $SUT == "greenkart"
-    - if: $SUT == "" 
-
-sut:bookstore:
-  extends: .suite_with_mysql
-  variables:
-    SUT: bookstore
-    BASE_URL: https://rahulshettyacademy.com
-    API_BASE_URL: https://rahulshettyacademy.com
-  script:
-    - |
-      if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
-        echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD" >&2
-        exit 1
-      fi
-    - npm run bdd -- .features-gen/features/${SUT}
-    - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
-    - npm run allure:generate
-  rules:
-    - if: $TAGS != ""
-      when: never
-    - if: $SUT == "bookstore"
-    - if: $SUT == "" 
-
-sut:petstore:
+report:allure:
   extends: .default_suite
-  variables:
-    SUT: petstore
-    BASE_URL: https://petstore.swagger.io
-    API_BASE_URL: https://petstore.swagger.io/v2
-  script:
-    - npm run bdd -- .features-gen/features/${SUT}
-    - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
-    - npm run allure:generate
+  stage: report
+  needs:
+    - job: suite
+      artifacts: true
   rules:
-    - if: $TAGS != ""
-      when: never
-    - if: $SUT == "petstore"
-    - if: $SUT == "" 
+    - when: always
+  cache:
+    key: "report-${CI_COMMIT_REF_SLUG}-${Suite}-${Omgeving}"
+    policy: pull-push
+    paths:
+      - .npm/
+      - .allure-history/
+  script:
+    - node --version
+    - npm --version
+    - npm ci --prefer-offline --no-audit --progress=false
+    - |
+      SUITE="${Suite:-bookstore}"
+      OMGEVING="${Omgeving:-test}"
+      REPORT_TS="$(date -u +%Y%m%d-%H%M%S)"
+      REPORT_DIR="allure-report-${REPORT_TS}"
+
+      HISTORY_CACHE_DIR=".allure-history/${SUITE}/${OMGEVING}"
+      if [ -d "${HISTORY_CACHE_DIR}" ]; then
+        echo "Restoring Allure history from ${HISTORY_CACHE_DIR}";
+        mkdir -p allure-results/history
+        cp -R "${HISTORY_CACHE_DIR}/"* allure-results/history/ 2>/dev/null || true
+      else
+        echo "No previous Allure history found for ${SUITE}/${OMGEVING} (first run or cache miss).";
+      fi
+
+      echo "Generating Allure report into ${REPORT_DIR}";
+      npx allure generate allure-results --clean -o "${REPORT_DIR}" || true
+
+      # Persist history for next runs so Allure's History tab shows per-test history.
+      mkdir -p "${HISTORY_CACHE_DIR}"
+      rm -rf "${HISTORY_CACHE_DIR}"/*
+      if [ -d "${REPORT_DIR}/history" ]; then
+        cp -R "${REPORT_DIR}/history/"* "${HISTORY_CACHE_DIR}/" 2>/dev/null || true
+        echo "Saved Allure history to ${HISTORY_CACHE_DIR}";
+      else
+        echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
+      fi
+
+      echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+  artifacts:
+    when: always
+    expire_in: 14 days
+    paths:
+      - allure-results/
+      - allure-report-*/

@@ -1,4 +1,4 @@
-@e2e @ui @checkout @shopping-cart
+@all @letsshop @e2e @ui @checkout @shopping-cart
 Feature: shopping cart end-to-end tests
 
   Scenario: user places an order for two products
