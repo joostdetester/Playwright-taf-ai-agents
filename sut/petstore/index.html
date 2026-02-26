@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUT status</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;padding:24px;max-width:900px;margin:0 auto}
+    .grid{display:flex;gap:12px;flex-wrap:wrap}
+    .card{border:1px solid #e5e7eb;border-radius:10px;padding:12px;min-width:180px}
+    .ok{color:green}
+    .bad{color:#d9534f}
+    .meta{color:#666;font-size:12px}
+    code{background:#f4f4f4;padding:2px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <h1>SUT: <code id="sut">petstore</code></h1>
+  <p class="meta">Deze pagina toont de laatste CI-run voor deze SUT.</p>
+  <div class="grid">
+    <div class="card"><div class="meta">Status</div><div id="status">-</div></div>
+    <div class="card"><div class="meta">Total</div><div id="total">-</div></div>
+    <div class="card"><div class="meta">Passed</div><div id="passed">-</div></div>
+    <div class="card"><div class="meta">Failed</div><div id="failed">-</div></div>
+  </div>
+  <p style="margin-top:16px">
+    <a href="./allure/">Open Allure report</a>
+  </p>
+  <pre class="meta" id="details"></pre>
+  <script>
+    (async () => {
+      try {
+        const res = await fetch('./summary.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('summary.json not found');
+        const j = await res.json();
+        document.getElementById('sut').textContent = j.suite || 'petstore';
+        const status = String(j.status || 'UNKNOWN');
+        const statusEl = document.getElementById('status');
+        statusEl.textContent = status;
+        statusEl.className = status === 'PASSED' ? 'ok' : (status === 'FAILED' ? 'bad' : '');
+        document.getElementById('total').textContent = j.total ?? 0;
+        document.getElementById('passed').textContent = j.passed ?? 0;
+        document.getElementById('failed').textContent = j.failed ?? 0;
+        document.getElementById('details').textContent = JSON.stringify({
+          start: j.start, stop: j.stop, durationMs: j.durationMs,
+          skipped: j.skipped,
+          failedTests: (j.failedTests || []).slice(0, 20)
+        }, null, 2);
+      } catch (e) {
+        document.getElementById('details').textContent = String(e);
+      }
+    })();
+  </script>
+</body>
+</html>
