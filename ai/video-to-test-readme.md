@@ -1,6 +1,6 @@
 ---
 title: Video-to-Test Workflow
-description: Stap-voor-stap handleiding om van een UI-video naar een werkende Playwright-BDD test te gaan.
+description: Step-by-step guide to turn a UI video into a working Playwright-BDD test.
 owner: team-qa
 tags: [docs, workflow, video, playwright, bdd, prompts]
 version: 1.0
@@ -8,77 +8,78 @@ version: 1.0
 
 # Video → Prompt → Feature/Steps/POM → Run
 
-Dit document beschrijft de generieke workflow om op basis van een UI-screen recording een nieuwe geautomatiseerde test aan te maken in deze repo (Playwright + playwright-bdd + Page Object Model + Allure).
+This document describes the generic workflow to create a new automated test in this repository from a UI screen recording (Playwright + playwright-bdd + Page Object Model + Allure).
 
-## Vereisten
+## Prerequisites
 
-- Dependencies geïnstalleerd:
+- Install dependencies:
   - `npm ci`
   - `npx playwright install`
-- Je hebt een video van een **happy flow** (liefst kort en zonder onnodige zijpaden).
+- You have a video of a **happy flow** (preferably short and without unnecessary detours).
 
-## Stap 1 — Plaats de video in de repo
+## Step 1 — Add the video to the repo
 
-- Zet je screen recording onder de map `specs/videos/`.
-- Gebruik een duidelijke naam, bijvoorbeeld: `specs/videos/<flow-naam>.mp4`.
+- Use a clear name, for example: `specs/videos/<flow-name>.mp4`.
 
-Tip: als je meerdere varianten hebt (desktop/mobile), zet dat in de bestandsnaam.
+Tip: if you have multiple variants (desktop/mobile), include that in the file name.
 
-## Stap 2 — Genereer een nieuwe “test-generator prompt” op basis van de video
+## Step 2 — Generate a new “test-generator prompt” from the video
 
-Doel van deze stap: maak een **nieuw prompt-bestand** dat later gebruikt wordt om code te genereren (feature + steps + page objects).
+Goal of this step: create a **new prompt file** that will later be used to generate code (feature + steps + page objects).
 
-Gebruik het template:
+Use the template:
 - `ai/prompts/templates/ui-from-video.prompt-template.md`
 
-### Wat je in Copilot Chat (of agent) vraagt
+Important: the generated prompt itself must be written in English. The resulting Gherkin steps and all instructions in the prompt must be in English.
 
-Gebruik een prompt in deze trant (houd het generiek):
+### What to ask in Copilot Chat (or an agent)
 
-- Ik heb een video van een UI flow geüpload in `specs/videos/<flow-naam>.mp4`.
-- Gebruik het prompt template `ai/prompts/templates/ui-from-video.prompt-template.md`.
-- Genereer een nieuwe prompt voor deze flow.
-- Sla de prompt op als: `ai/prompts/e2e/<flow-naam>.prompt.md`.
+Use a prompt along these lines (keep it generic):
 
-### Wat het resultaat moet zijn
+- I uploaded a video of a UI flow in `specs/videos/<flow-name>.mp4`.
+- Use the prompt template `ai/prompts/templates/ui-from-video.prompt-template.md`.
+- Generate a new prompt for this flow.
+- Save the prompt as: `ai/prompts/e2e/<flow-name>.prompt.md`.
 
-Een nieuw prompt-bestand, bijvoorbeeld:
-- `ai/prompts/e2e/<flow-naam>.prompt.md`
+### Expected result
 
-Dat bestand hoort minimaal te bevatten:
-- Context + doel
-- Flow (business-stappen)
-- Betrokken pagina’s/schermen
-- Constraints (POM gebruiken, geen selectors uit video “gokken”, geen secrets)
-- Output-locaties voor feature/steps/page objects
+A new prompt file, for example:
+- `ai/prompts/e2e/<flow-name>.prompt.md`
 
-## Stap 3 — Genereer feature, steps en page objects vanuit de prompt
+That file should contain at minimum:
+- Context + goal
+- Flow (business steps)
+- Involved pages/screens
+- Constraints (use POM, don’t “guess” selectors from the video, no secrets)
+- Output locations for feature/steps/page objects
 
-Doel van deze stap: laat de agent/codegen de echte testartefacten aanmaken.
+## Step 3 — Generate feature, steps, and page objects from the prompt
 
-### Wat je in Copilot Chat (of agent) vraagt
+Goal of this step: have the agent/codegen create the actual test artifacts.
 
-- Gebruik `ai/prompts/e2e/<flow-naam>.prompt.md`.
-- Genereer:
-  - Een feature file
+### What to ask in Copilot Chat (or an agent)
+
+- Use `ai/prompts/e2e/<flow-name>.prompt.md`.
+- Generate:
+  - A feature file
   - Step definitions
   - Page objects
 
-### Conventies (verwachte output-locaties)
+### Conventions (expected output locations)
 
-Gebruik deze repo-conventies:
-- Feature file: `features/**/<flow-naam>.feature`
-- Step definitions: `steps/**/<flow-naam>.steps.ts`
-- Page Objects: `ui/pages/**` (bijv. 1 page per scherm)
+Use these repository conventions:
+- Feature file: `features/**/<flow-name>.feature`
+- Step definitions: `steps/**/<flow-name>.steps.ts`
+- Page Objects: `ui/pages/**` (e.g. 1 page per screen)
 
-Belangrijk:
-- Step files blijven “thin”: roepen vooral Page Object methods aan.
-- Locators/selector-logica hoort in Page Objects.
-- Assertions horen in steps (of dedicated assert-helpers), niet in Page Objects.
+Important:
+- Keep step files “thin”: mostly call Page Object methods.
+- Locator/selector logic belongs in Page Objects.
+- Assertions belong in steps (or dedicated assert helpers), not in Page Objects.
 
-## Stap 4 — Genereer de Playwright specs (bddgen)
+## Step 4 — Generate the Playwright specs (bddgen)
 
-Playwright-BDD zet `.feature` bestanden om naar uitvoerbare Playwright tests in `.features-gen/`.
+Playwright-BDD turns `.feature` files into runnable Playwright tests in `.features-gen/`.
 
 Run:
 
@@ -86,50 +87,50 @@ Run:
 npm run bddgen
 ```
 
-Handig om te checken of je scenario’s correct ontdekt worden:
+Helpful to verify whether your scenarios are discovered correctly:
 
 ```powershell
 npx playwright test --list
 ```
 
-## Stap 5 — Draai de test om te verifiëren
+## Step 5 — Run the test to verify
 
-### Optie A: draai alles (incl. Allure)
+### Option A: run everything (including Allure)
 
 ```powershell
 npm run bdd
 ```
 
-### Optie B: draai 1 feature file
+### Option B: run one feature file
 
 ```powershell
-npm run bdd -- features/<pad>/<flow-naam>.feature
+npm run bdd -- features/<path>/<flow-name>.feature
 ```
 
-### Optie C: debug headed
+### Option C: debug headed
 
 ```powershell
 npx playwright test --headed
 ```
 
-Tip: gebruik `--grep` om op scenario titel te filteren.
+Tip: use `--grep` to filter by scenario title.
 
-## Stap 6 — Bekijk Allure
+## Step 6 — View Allure
 
-Na een run staan resultaten in `allure-results/`.
+After a run, results are stored in `allure-results/`.
 
-Genereer + open report:
+Generate + open the report:
 
 ```powershell
 npm run allure:generate
 npm run allure:open
 ```
 
-## Troubleshooting (kort)
+## Troubleshooting (short)
 
-- Als je in Allure “Example #n” ziet bij `Scenario Outline`:
-  - Zet `<kolom>` placeholders in de `Scenario Outline` titel (bijv. `"<author>"`), of
-  - Gebruik `# title-format:` boven `Examples:`.
-- Als een UI stap flaky is:
-  - Stabiliseer in Page Object (betere waits/locators), houd Gherkin business-georiënteerd.
+- If you see “Example #n” in Allure for a `Scenario Outline`:
+  - Add `<column>` placeholders to the `Scenario Outline` title (e.g. `"<author>"`), or
+  - Use `# title-format:` above `Examples:`.
+- If a UI step is flaky:
+  - Stabilize it in the Page Object (better waits/locators) and keep the Gherkin business-oriented.
 

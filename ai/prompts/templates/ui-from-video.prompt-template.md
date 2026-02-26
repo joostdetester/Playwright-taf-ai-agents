@@ -28,7 +28,7 @@ Instructions:
 - Use the video only to understand the user journey and business flow
 - Do NOT infer selectors from the video
 - Do NOT include raw UI click steps
-- Convert the flow into business-oriented Gherkin steps
+- Convert the flow into business-oriented Gherkin steps written in English. Steps must be specific and explicit: use concrete placeholders or values (for example: `When the user adds the product "Blue T-Shirt" to the cart`), not generic statements like "add a product".
 - Propose missing data-test-id selectors if needed
 - Assume Playwright + BDD style (see playwright-bdd-style.md)
 
@@ -42,6 +42,7 @@ The generated prompt must include:
 - Optional selectors (as placeholders)
 - Constraints (framework rules)
 - Output file locations
+ - Note: All Gherkin steps in the generated feature must be in English and use specific, testable phrasing or clear placeholders.
 
 Constraints:
 - Follow ai-instructions.md
@@ -50,6 +51,7 @@ Constraints:
 - No hardcoded secrets
 - No Cypress
 - Steps must be reusable
+ - Steps must be written in English and be specific (avoid vague/generic step text)
 
 Output:
 - A new prompt file in: ai/prompts/e2e/<scenario-name>.prompt.md

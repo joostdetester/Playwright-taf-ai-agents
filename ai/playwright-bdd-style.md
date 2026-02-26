@@ -15,6 +15,8 @@ version: 1.0
 - Avoid technical language in scenarios
 - Scenarios must be independently runnable
 - Scenarios must contain meaningful tags
+ - All Given/When/Then steps MUST be written in English.
+ - Steps should be specific and explicit (use concrete placeholders or values), not vague/generic actions.
 
 ### Scenario Outlines (Examples)
 - By default, each example row is shown as generic `Example #n` in Playwright/Allure.
@@ -35,7 +37,7 @@ Scenario: Click submit button
 	Then the API returns 200
 
 
-## Principes voor consistente Playwright-BDD integratie (zoals Green Kart checkout)
+## Principes voor consistente Playwright-BDD integratie
 
 - Importeer Given/When/Then altijd uit een lokale bdd.ts (nooit direct uit @cucumber/cucumber)
 - Elke stap krijgt een context-object met `{ page, config }` (zoals Playwright test context)
