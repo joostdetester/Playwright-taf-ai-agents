@@ -71,6 +71,15 @@ jobs:
           npm ci --prefer-offline --no-audit --progress=false
           npx playwright install --with-deps
 
+      - name: Validate UI credentials
+        shell: bash
+        run: |
+          set -e
+          if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
+            echo "::error title=Missing GitHub Secrets::Set TEST_USER_EMAIL and TEST_USER_PASSWORD in GitHub (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
       - name: Run letsshop suite
         id: tests
         shell: bash
