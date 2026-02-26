@@ -30,7 +30,10 @@ export class OrderConfirmationPage {
 
     // Fallback: if the above is too broad, return all-uppercase-like texts on the page.
     if (unique.size === 0) {
-      const allText = await this.page.locator('body').innerText();
+      // Some apps incorrectly render nested <body> tags inside components, which makes
+      // `locator('body')` match multiple elements and fail in strict mode. Target the
+      // real top-level document body instead.
+      const allText = await this.page.locator('html > body').innerText();
       for (const line of allText.split('\n')) {
         const value = line.trim();
         if (!value) continue;
