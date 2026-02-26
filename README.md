@@ -110,6 +110,13 @@ CI
 - GitHub Actions (`.github/workflows/ci.yml`) runs on pushes/PRs to `main`.
 - It executes `npm run bdd:dummy` and spins up a temporary MySQL service for DB feature tests.
 
+GitLab CI
+- Pipelines are configured in `.gitlab-ci.yml` with one job per SUT suite.
+- Required GitLab CI/CD variables (Project → Settings → CI/CD → Variables):
+	- `TEST_USER_EMAIL`
+	- `TEST_USER_PASSWORD`
+- MySQL is started as a CI service container for DB-enabled suites (letsshop/greenkart/bookstore).
+
 Per-SUT reporting (GitHub Pages)
 - Dedicated SUT workflows live under `.github/workflows/sut-*.yml` and run only one SUT suite.
 - Each workflow publishes a lightweight status page (counts + status + Allure link) to `gh-pages` under `sut/<sut>/`.
