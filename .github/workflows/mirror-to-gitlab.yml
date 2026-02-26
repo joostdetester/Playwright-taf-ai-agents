@@ -29,31 +29,37 @@ jobs:
         shell: bash
         env:
           GITLAB_SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
+          GITLAB_SSH_PRIVATE_KEY_B64: ${{ secrets.GITLAB_SSH_PRIVATE_KEY_B64 }}
         run: |
           set -euo pipefail
 
-          if [ -z "${GITLAB_SSH_PRIVATE_KEY}" ]; then
-            echo "Missing required secret: GITLAB_SSH_PRIVATE_KEY" >&2
+          if [ -z "${GITLAB_SSH_PRIVATE_KEY_B64}" ] && [ -z "${GITLAB_SSH_PRIVATE_KEY}" ]; then
+            echo "Missing required secret: set either GITLAB_SSH_PRIVATE_KEY_B64 (preferred) or GITLAB_SSH_PRIVATE_KEY" >&2
             exit 1
           fi
 
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Sanity checks before writing.
-          if [[ "${GITLAB_SSH_PRIVATE_KEY}" == ssh-* ]]; then
-            echo "Secret GITLAB_SSH_PRIVATE_KEY looks like a PUBLIC key (starts with 'ssh-...')." >&2
-            echo "Paste the PRIVATE key instead (starts with '-----BEGIN OPENSSH PRIVATE KEY-----')." >&2
-            exit 1
-          fi
-          if ! printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
-            echo "Secret GITLAB_SSH_PRIVATE_KEY does not look like an OpenSSH PRIVATE key." >&2
-            echo "It should contain the line: '-----BEGIN OPENSSH PRIVATE KEY-----'." >&2
-            exit 1
-          fi
+          if [ -n "${GITLAB_SSH_PRIVATE_KEY_B64}" ]; then
+            # Preferred: single-line secret, avoids newline/clipboard issues.
+            echo "${GITLAB_SSH_PRIVATE_KEY_B64}" | tr -d '\r\n' | base64 -d > ~/.ssh/id_ed25519
+          else
+            # Fallback: raw multiline secret.
+            if [[ "${GITLAB_SSH_PRIVATE_KEY}" == ssh-* ]]; then
+              echo "Secret GITLAB_SSH_PRIVATE_KEY looks like a PUBLIC key (starts with 'ssh-...')." >&2
+              echo "Paste the PRIVATE key instead (starts with '-----BEGIN OPENSSH PRIVATE KEY-----')." >&2
+              exit 1
+            fi
+            if ! printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+              echo "Secret GITLAB_SSH_PRIVATE_KEY does not look like an OpenSSH PRIVATE key." >&2
+              echo "It should contain the line: '-----BEGIN OPENSSH PRIVATE KEY-----'." >&2
+              exit 1
+            fi
 
-          # Write key without mangling newlines; do not print it.
-          printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
+            # Write key without mangling newlines; do not print it.
+            printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
+          fi
           chmod 600 ~/.ssh/id_ed25519
 
           # Validate key parses (common failure: pasted public key or truncated private key)
