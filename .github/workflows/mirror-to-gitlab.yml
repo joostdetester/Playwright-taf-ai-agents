@@ -1,0 +1,54 @@
+name: Mirror to GitLab
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force update GitLab main (use only if GitLab diverged)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: read
+
+env:
+  GITLAB_REPO_SSH: git@gitlab.com:joost-de-tester-group/playwright-taf-ai-agents-mirror.git
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -e
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITLAB_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t rsa,ed25519 gitlab.com >> ~/.ssh/known_hosts
+
+      - name: Add GitLab remote
+        shell: bash
+        run: |
+          set -e
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab "${GITLAB_REPO_SSH}"
+
+      - name: Push main + tags to GitLab
+        shell: bash
+        run: |
+          set -e
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            git push gitlab HEAD:main --force
+            git push gitlab --tags --force
+          else
+            git push gitlab HEAD:main
+            git push gitlab --tags
+          fi
