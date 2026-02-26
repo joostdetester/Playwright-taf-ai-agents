@@ -1,12 +1,8 @@
 {
   "suite": "bookstore",
-  "total": 6,
-  "passed": 6,
+  "total": 0,
+  "passed": 0,
   "failed": 0,
   "skipped": 0,
-  "failedTests": [],
-  "status": "PASSED",
-  "start": "2026-02-26T14:13:52.328Z",
-  "stop": "2026-02-26T14:13:59.349Z",
-  "durationMs": 7021
+  "status": "UNKNOWN"
 }
