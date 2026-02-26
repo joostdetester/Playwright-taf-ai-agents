@@ -14,7 +14,8 @@ permissions:
   contents: read
 
 env:
-  GITLAB_REPO_SSH: git@gitlab.com:joost-de-tester-group/playwright-taf-ai-agents-mirror.git
+  # Override via GitHub secret GITLAB_REPO_SSH if your GitLab namespace/project path changes.
+  GITLAB_REPO_SSH: ${{ secrets.GITLAB_REPO_SSH || 'git@gitlab.com:joost-de-tester-group/playwright-taf-ai-agents-mirror.git' }}
 
 jobs:
   mirror:
