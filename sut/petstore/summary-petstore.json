@@ -1,8 +1,12 @@
 {
   "suite": "petstore",
-  "total": 0,
-  "passed": 0,
+  "total": 4,
+  "passed": 4,
   "failed": 0,
   "skipped": 0,
-  "status": "UNKNOWN"
+  "failedTests": [],
+  "status": "PASSED",
+  "start": "2026-02-26T16:46:47.674Z",
+  "stop": "2026-02-26T16:46:48.256Z",
+  "durationMs": 582
 }
