@@ -5,6 +5,7 @@ import { DashboardPage } from '../../../pageobjects/letsshop/dashboard.page';
 import { CartPage } from '../../../pageobjects/letsshop/cart.page';
 import { CheckoutPage } from '../../../pageobjects/letsshop/checkout.page';
 import { OrderConfirmationPage } from '../../../pageobjects/letsshop/order-confirmation.page';
+import { OrdersPage } from '../../../pageobjects/letsshop/orders.page';
 
 function getRequiredEnv(name: string): string {
   const value = process.env[name];
@@ -108,11 +109,10 @@ Then('the shopping order summary should list the following products:', async ({ 
   const confirmationPage = new OrderConfirmationPage(page);
   const expectedProducts: string[] = dataTable.hashes().map((r: any) => String(r.product));
 
-  const visibleProducts = await confirmationPage.getVisibleProductNames();
-  for (const expected of expectedProducts) {
-    expect(
-      visibleProducts.map((p) => p.toLowerCase()),
-      `Expected product to be listed: ${expected}. Visible products: ${visibleProducts.join(', ')}`,
-    ).toContain(expected.toLowerCase());
-  }
+  // The thank-you page mainly shows order ids; product names are visible under Orders History.
+  await confirmationPage.openOrdersHistory();
+
+  const ordersPage = new OrdersPage(page);
+  await ordersPage.assertLoaded();
+  await ordersPage.assertContainsProducts(expectedProducts);
 });

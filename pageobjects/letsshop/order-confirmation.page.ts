@@ -13,6 +13,24 @@ export class OrderConfirmationPage {
     await expect(this.page.getByText(new RegExp(this.escapeRegex(expected), 'i'))).toBeVisible();
   }
 
+  async openOrdersHistory() {
+    // The thank-you page doesn't list product names, but it contains a link/text to the Orders History page,
+    // and also a header nav item named "ORDERS".
+    const ordersHistoryLink = this.page.getByText(/orders\s+history\s+page/i).first();
+    const ordersNav = this.page
+      .getByRole('button', { name: /orders/i })
+      .or(this.page.getByRole('link', { name: /orders/i }))
+      .or(this.page.getByText(/^\s*orders\s*$/i))
+      .first();
+
+    if (await ordersHistoryLink.isVisible().catch(() => false)) {
+      await ordersHistoryLink.click();
+      return;
+    }
+
+    await ordersNav.click();
+  }
+
   async getVisibleProductNames(): Promise<string[]> {
     // Best-effort extraction: collect the visible product titles from the order summary.
     // We intentionally avoid hard-coding CSS selectors; use visible text patterns.
