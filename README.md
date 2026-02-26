@@ -117,6 +117,14 @@ GitLab CI
 	- `TEST_USER_PASSWORD`
 - MySQL is started as a CI service container for DB-enabled suites (letsshop/greenkart/bookstore).
 
+GitLab pipelines (per SUT)
+- Run all suites: just run a normal pipeline (push/MR) without extra variables.
+- Run one suite: start a pipeline with variable `SUT` set to one of: `letsshop`, `greenkart`, `bookstore`, `petstore`.
+
+GitLab pipeline (by tag)
+- Start a pipeline with variable `TAGS` set to a Gherkin tag expression (e.g. `@smoke and not @wip`).
+- Optional: also set `SUT` to limit to one SUT.
+
 Per-SUT reporting (GitHub Pages)
 - Dedicated SUT workflows live under `.github/workflows/sut-*.yml` and run only one SUT suite.
 - Each workflow publishes a lightweight status page (counts + status + Allure link) to `gh-pages` under `sut/<sut>/`.

@@ -11,6 +11,10 @@ workflow:
 variables:
   MCP_ENABLED: "false"
   NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
+  # Optional: limit to one SUT. Examples: letsshop | greenkart | bookstore | petstore
+  SUT: ""
+  # Optional: Gherkin tag expression for generation filtering. Example: "@smoke and not @wip"
+  TAGS: ""
 
 cache:
   key: "npm-${CI_COMMIT_REF_SLUG}"
@@ -56,6 +60,38 @@ cache:
         echo "Waiting for MySQL... ($i/60)"; sleep 2
       done
 
+.tagged_suite:
+  extends: .suite_with_mysql
+  script:
+    - |
+      if [ -z "${TAGS:-}" ]; then
+        echo "Missing GitLab CI/CD variable TAGS (example: @smoke and not @wip)" >&2
+        exit 1
+      fi
+    - |
+      # If SUT is provided, run only that SUT directory; otherwise run all generated suites.
+      TARGET_DIR=".features-gen/features"
+      if [ -n "${SUT:-}" ]; then
+        TARGET_DIR=".features-gen/features/${SUT}"
+      fi
+      echo "Generating tests with TAGS=${TAGS}";
+      npx bddgen test --tags "${TAGS}"
+      # Require UI creds unless explicitly running petstore-only.
+      if [ "${SUT:-}" != "petstore" ]; then
+        if [ -z "${TEST_USER_EMAIL:-}" ] || [ -z "${TEST_USER_PASSWORD:-}" ]; then
+          echo "Missing GitLab CI/CD variables TEST_USER_EMAIL and/or TEST_USER_PASSWORD" >&2
+          exit 1
+        fi
+      fi
+      npx playwright test --reporter=list,allure-playwright "${TARGET_DIR}"
+      node scripts/generate-summary.js --suite=${SUT:-tagged} --out=summary-${SUT:-tagged}.json || true
+      npm run allure:generate
+
+tagged:
+  extends: .tagged_suite
+  rules:
+    - if: $TAGS != ""
+
 sut:letsshop:
   extends: .suite_with_mysql
   variables:
@@ -71,6 +107,11 @@ sut:letsshop:
     - npm run bdd -- .features-gen/features/${SUT}
     - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
     - npm run allure:generate
+  rules:
+    - if: $TAGS != ""
+      when: never
+    - if: $SUT == "letsshop"
+    - if: $SUT == "" 
 
 sut:greenkart:
   extends: .suite_with_mysql
@@ -87,6 +128,11 @@ sut:greenkart:
     - npm run bdd -- .features-gen/features/${SUT}
     - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
     - npm run allure:generate
+  rules:
+    - if: $TAGS != ""
+      when: never
+    - if: $SUT == "greenkart"
+    - if: $SUT == "" 
 
 sut:bookstore:
   extends: .suite_with_mysql
@@ -103,6 +149,11 @@ sut:bookstore:
     - npm run bdd -- .features-gen/features/${SUT}
     - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
     - npm run allure:generate
+  rules:
+    - if: $TAGS != ""
+      when: never
+    - if: $SUT == "bookstore"
+    - if: $SUT == "" 
 
 sut:petstore:
   extends: .default_suite
@@ -114,3 +165,8 @@ sut:petstore:
     - npm run bdd -- .features-gen/features/${SUT}
     - node scripts/generate-summary.js --suite=${SUT} --out=summary-${SUT}.json || true
     - npm run allure:generate
+  rules:
+    - if: $TAGS != ""
+      when: never
+    - if: $SUT == "petstore"
+    - if: $SUT == "" 
