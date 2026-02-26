@@ -151,6 +151,16 @@ report:allure:
   script:
     - node --version
     - npm --version
+    - |
+      # Allure CLI requires Java. Playwright image typically doesn't include it.
+      if command -v java >/dev/null 2>&1; then
+        java -version
+      else
+        echo "Java not found; installing OpenJDK...";
+        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
+          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        java -version
+      fi
     - npm ci --prefer-offline --no-audit --progress=false
     - |
       SUITE="$[[ inputs.Suite ]]"
@@ -168,7 +178,24 @@ report:allure:
       fi
 
       echo "Generating Allure report into ${REPORT_DIR}";
-      npx allure generate allure-results --clean -o "${REPORT_DIR}" || true
+      mkdir -p "${REPORT_DIR}"
+      if ! npx allure generate allure-results --clean -o "${REPORT_DIR}"; then
+        echo "Allure report generation failed; creating placeholder index.html" >&2
+        cat > "${REPORT_DIR}/index.html" <<'HTML'
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Allure report generation failed</title>
+  </head>
+  <body>
+    <h1>Allure report generation failed</h1>
+    <p>Check the job log for the Allure CLI error output. A Java runtime is required.</p>
+  </body>
+</html>
+HTML
+      fi
 
       # Persist history for next runs so Allure's History tab shows per-test history.
       mkdir -p "${HISTORY_CACHE_DIR}"
@@ -180,7 +207,11 @@ report:allure:
         echo "No history directory produced in ${REPORT_DIR} (report generation may have been skipped/failed).";
       fi
 
-      echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      if [ -f "${REPORT_DIR}/index.html" ]; then
+        echo "Allure report (artifact link): ${CI_PROJECT_URL}/-/jobs/${CI_JOB_ID}/artifacts/file/${REPORT_DIR}/index.html"
+      else
+        echo "Allure report index.html not found in ${REPORT_DIR}; artifact link not available." >&2
+      fi
   artifacts:
     when: always
     expire_in: 14 days
