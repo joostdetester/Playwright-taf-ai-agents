@@ -8,7 +8,7 @@
     "user places an order for two products"
   ],
   "status": "FAILED",
-  "start": "2026-02-26T17:30:31.739Z",
-  "stop": "2026-02-26T17:30:45.111Z",
-  "durationMs": 13372
+  "start": "2026-02-26T17:32:24.073Z",
+  "stop": "2026-02-26T17:32:34.697Z",
+  "durationMs": 10624
 }
