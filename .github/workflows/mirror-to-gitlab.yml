@@ -27,10 +27,12 @@ jobs:
 
       - name: Configure SSH
         shell: bash
+        env:
+          GITLAB_SSH_PRIVATE_KEY: ${{ secrets.GITLAB_SSH_PRIVATE_KEY }}
         run: |
           set -euo pipefail
 
-          if [ -z "${{ secrets.GITLAB_SSH_PRIVATE_KEY }}" ]; then
+          if [ -z "${GITLAB_SSH_PRIVATE_KEY}" ]; then
             echo "Missing required secret: GITLAB_SSH_PRIVATE_KEY" >&2
             exit 1
           fi
@@ -38,8 +40,20 @@ jobs:
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
+          # Sanity checks before writing.
+          if [[ "${GITLAB_SSH_PRIVATE_KEY}" == ssh-* ]]; then
+            echo "Secret GITLAB_SSH_PRIVATE_KEY looks like a PUBLIC key (starts with 'ssh-...')." >&2
+            echo "Paste the PRIVATE key instead (starts with '-----BEGIN OPENSSH PRIVATE KEY-----')." >&2
+            exit 1
+          fi
+          if ! printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' | grep -q "BEGIN OPENSSH PRIVATE KEY"; then
+            echo "Secret GITLAB_SSH_PRIVATE_KEY does not look like an OpenSSH PRIVATE key." >&2
+            echo "It should contain the line: '-----BEGIN OPENSSH PRIVATE KEY-----'." >&2
+            exit 1
+          fi
+
           # Write key without mangling newlines; do not print it.
-          printf '%s' "${{ secrets.GITLAB_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          printf '%s' "${GITLAB_SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
           # Validate key parses (common failure: pasted public key or truncated private key)
