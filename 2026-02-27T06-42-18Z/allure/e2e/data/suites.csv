@@ -1,0 +1,8 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","30247","API returns the same books as the database for author ""Rahul Shetty""","","2026-02-27","broken","2026-02-27","Bookstore end-to-end tests > API returns the same books as the database for author ""<author>""","features/bookstore/e2e/bookstore-e2e-tests.feature.spec.js","",""
+"","232","Add Pet and Update Pet then Get Pet by id","","2026-02-27","passed","2026-02-27","Petstore end-to-end tests","features/petstore/e2e/petstore-e2e-tests.feature.spec.js","",""
+"","664","Add Pet and Get Pet by id","","2026-02-27","passed","2026-02-27","Petstore end-to-end tests","features/petstore/e2e/petstore-e2e-tests.feature.spec.js","",""
+"","1887","user completes the practice page flow","","2026-02-27","failed","2026-02-27","Practice page end-to-end tests","features/letsshop/e2e/practice-page-e2e-tests.feature.spec.js","",""
+"","278","Add Pet, Get Pet, Delete Pet and confirm not found","","2026-02-27","passed","2026-02-27","Petstore end-to-end tests","features/petstore/e2e/petstore-e2e-tests.feature.spec.js","",""
+"","532","user places an order for two products","","2026-02-27","failed","2026-02-27","shopping cart end-to-end tests","features/letsshop/e2e/shopping-cart-e2e-tests.feature.spec.js","",""
+"","30231","API returns the same books as the database for author ""John Doe""","","2026-02-27","broken","2026-02-27","Bookstore end-to-end tests > API returns the same books as the database for author ""<author>""","features/bookstore/e2e/bookstore-e2e-tests.feature.spec.js","",""
