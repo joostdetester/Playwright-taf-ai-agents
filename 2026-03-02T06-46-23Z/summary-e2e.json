@@ -1,0 +1,15 @@
+{
+  "suite": "e2e",
+  "total": 7,
+  "passed": 3,
+  "failed": 2,
+  "skipped": 0,
+  "failedTests": [
+    "user completes the practice page flow",
+    "user places an order for two products"
+  ],
+  "status": "FAILED",
+  "start": "2026-03-02T06:45:00.728Z",
+  "stop": "2026-03-02T06:46:02.452Z",
+  "durationMs": 61724
+}
