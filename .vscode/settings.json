@@ -4,6 +4,20 @@
     "tests/**/*.ts"
   ],
   "cucumberautocomplete.syncfeatures": "features/**/*.feature",
+  "cucumberautocomplete.stepRegEx": [
+    "^(?:Given|When|Then|And|But)\\(\\s*'([^']*)'",
+    "^(?:Given|When|Then|And|But)\\(\\s*\"([^\"]*)\"",
+    "^(?:Given|When|Then|And|But)\\(\\s*`([^`]*)`"
+  ],
   "cucumberautocomplete.strictGherkinCompletion": false,
-  "cucumberautocomplete.smartSnippets": true
+  "cucumberautocomplete.smartSnippets": true,
+
+  // For the "Cucumber (Gherkin) Full Support" extension family.
+  "cucumber.features": [
+    "features/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "steps/**/*.ts",
+    "tests/**/*.ts"
+  ]
 }
