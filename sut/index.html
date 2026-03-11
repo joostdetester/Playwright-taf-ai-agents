@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SUT Dashboard</title>
+  <title>SUT Dashboard + Handleiding</title>
   <style>
     body{font-family:Arial,Helvetica,sans-serif;padding:24px;background:#f4f6f8}
     h1{margin:0 0 12px}
+    h2{margin:26px 0 12px}
+    h3{margin:18px 0 8px}
     .meta{font-size:12px;color:#666;margin-bottom:16px}
     .grid{display:flex;gap:12px;flex-wrap:wrap}
     .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);width:260px}
@@ -25,6 +27,13 @@
     .summary .box{background:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);min-width:160px}
     .summary .label{font-size:12px;color:#666}
     .summary .value{font-size:22px;font-weight:700}
+    .panel{background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);max-width:1100px}
+    .toc a{display:inline-block;margin:0 10px 8px 0}
+    code{background:#eef1f4;padding:1px 5px;border-radius:4px}
+    pre{background:#0b1020;color:#e6edf3;padding:12px 14px;border-radius:8px;overflow:auto}
+    pre code{background:transparent;padding:0;color:inherit}
+    ul,ol{margin-top:8px}
+    .hint{font-size:12px;color:#666}
   </style>
 </head>
 <body>
@@ -121,5 +130,258 @@
       document.getElementById('agg-failed').textContent = aggFailed;
     })();
   </script>
+
+  <h2 id="handleiding">Handleiding: input → prompt → tests</h2>
+  <div class="panel">
+    <div class="toc">
+      <a href="#quickstart">Quick start</a>
+      <a href="#ui">UI (video)</a>
+      <a href="#api">API (OpenAPI)</a>
+      <a href="#integratie">Integratie (API + DB)</a>
+      <a href="#e2e">E2E (UI + API + DB)</a>
+      <a href="#conventies">Conventies</a>
+      <a href="#troubleshooting">Troubleshooting</a>
+    </div>
+
+    <p class="hint">
+      Doel: op basis van input (video, OpenAPI JSON, DB-context) eerst een <strong>prompt</strong> maken, en daarna met Copilot Chat
+      de <strong>feature files</strong>, <strong>step definitions</strong> en <strong>page objects</strong> laten genereren.
+      Dit is de “as-is” werkwijze in deze repo.
+    </p>
+
+    <h3 id="quickstart">Quick start (1x)</h3>
+    <ol>
+      <li>Zet je project-ENV in <code>.env</code> (zie <code>.env.example</code>) en vul minimaal <code>BASE_URL</code> waar nodig.</li>
+      <li>Installeer dependencies en browsers:</li>
+    </ol>
+    <pre><code>npm ci
+npx playwright install</code></pre>
+    <ol start="3">
+      <li>Genereer Playwright tests uit Gherkin:</li>
+    </ol>
+    <pre><code>npm run bddgen</code></pre>
+    <ol start="4">
+      <li>Run tests (incl. Allure results):</li>
+    </ol>
+    <pre><code>npm run bdd</code></pre>
+    <ol start="5">
+      <li>Bekijk Allure report:</li>
+    </ol>
+    <pre><code>npm run allure:generate
+npm run allure:open</code></pre>
+
+    <h3 id="ui">Aanpak UI testen (op basis van video)</h3>
+    <p><strong>Voorbeeld in repo:</strong> letsshop shopping cart flow.</p>
+    <ul>
+      <li>Video voorbeeld: <code>specs/letsshop/videos/shopping-card.mp4</code></li>
+      <li>Prompt template: <code>ai/prompts/templates/ui-from-video.prompt-template.md</code></li>
+      <li>Voorbeeld prompt: <code>ai/prompts/e2e/shopping-card.prompt.md</code></li>
+      <li>Feature: <code>features/letsshop/e2e/shopping-cart-e2e-tests.feature</code></li>
+      <li>Steps: <code>steps/letsshop/e2e/shopping-cart-checkout.steps.ts</code></li>
+      <li>Page Objects: <code>pageobjects/letsshop/*</code></li>
+    </ul>
+    <ol>
+      <li>
+        Maak een korte screen recording van een happy flow en plaats hem als:
+        <code>specs/&lt;sut&gt;/videos/&lt;flow-name&gt;.mp4</code>.
+        Gebruik <strong>kebab-case</strong> en <strong>geen spaties</strong>.
+      </li>
+      <li>
+        Laat Copilot Chat een nieuwe prompt file maken op basis van de video.
+        Gebruik als basis <code>ai/prompts/templates/ui-from-video.prompt-template.md</code>.
+        <div class="hint">Output van deze stap: een nieuwe prompt file, bijv. <code>ai/prompts/e2e/&lt;flow-name&gt;.prompt.md</code>.</div>
+      </li>
+    </ol>
+    <pre><code>Copilot Chat (voorbeeld)
+
+Ik heb een UI video toegevoegd: specs/letsshop/videos/my-new-flow.mp4
+Gebruik het template ai/prompts/templates/ui-from-video.prompt-template.md
+Genereer een nieuwe prompt en sla op als: ai/prompts/e2e/my-new-flow.prompt.md</code></pre>
+    <ol start="3">
+      <li>
+        Gebruik daarna die prompt om code te laten genereren (feature + steps + page objects) volgens de repo-conventies:
+        <ul>
+          <li><code>features/&lt;sut&gt;/{ui,e2e}/**/&lt;flow-name&gt;.feature</code></li>
+          <li><code>steps/&lt;sut&gt;/{ui,e2e}/**/&lt;flow-name&gt;.steps.ts</code></li>
+          <li><code>pageobjects/&lt;sut&gt;/**</code></li>
+        </ul>
+      </li>
+      <li>Run <code>npm run bddgen</code> en daarna <code>npm run bdd</code>.</li>
+    </ol>
+
+    <pre><code>Copilot Chat (voorbeeld stap 3)
+
+Gebruik ai/prompts/e2e/my-new-flow.prompt.md
+Genereer op basis hiervan:
+- Feature file: features/letsshop/e2e/my-new-flow.feature
+- Step definitions: steps/letsshop/e2e/my-new-flow.steps.ts
+- Page Objects onder: pageobjects/letsshop/
+
+Regels:
+- Schrijf alle Gherkin steps in het Engels en business-georiënteerd
+- Maak steps “thin” en laat ze vooral Page Object methods aanroepen
+- Plaats selectors/locators in de Page Objects (bij voorkeur data-test-id placeholders)</code></pre>
+
+    <h3 id="api">Aanpak API testen (op basis van OpenAPI/Swagger JSON)</h3>
+    <p><strong>Voorbeeld in repo:</strong> petstore spec + schema validatie.</p>
+    <ul>
+      <li>Spec file: <code>specs/petstore/petstore.swagger.json</code></li>
+      <li>Feature: <code>features/petstore/api/petstore-api-tests.feature</code></li>
+      <li>Steps: <code>steps/petstore/api/petstore.steps.ts</code> (SwaggerParser + AJV schema checks)</li>
+    </ul>
+    <ol>
+      <li>Plaats je OpenAPI spec in <code>specs/&lt;sut&gt;/</code> (bijv. <code>specs/myapi/openapi.json</code>).</li>
+      <li>Maak een API prompt file onder <code>ai/prompts/api/</code> met:
+        <ul>
+          <li>endpoints + happy flows</li>
+          <li>verwachte statuscodes</li>
+          <li>schema-validatie (AJV) waar mogelijk</li>
+        </ul>
+      </li>
+      <li>Laat Copilot Chat feature + steps genereren onder <code>features/&lt;sut&gt;/api</code> en <code>steps/&lt;sut&gt;/api</code>.</li>
+      <li>Run <code>npm run bddgen</code> en <code>npm run bdd</code>.</li>
+    </ol>
+
+    <pre><code>Copilot Chat (voorbeeld API prompt maken)
+
+Ik heb een OpenAPI/Swagger spec toegevoegd: specs/petstore/petstore.swagger.json
+Maak een nieuwe prompt voor API testgeneratie en sla op als:
+ai/prompts/api/myapi-happy-flow.prompt.md
+
+Eisen:
+- Maak business-georiënteerde Gherkin stappen in het Engels
+- Gebruik Playwright request API voor calls
+- Voeg schema-validatie toe (AJV) op basis van de OpenAPI spec waar mogelijk
+- Output locaties:
+  - features/myapi/api/myapi-happy-flow.feature
+  - steps/myapi/api/myapi-happy-flow.steps.ts</code></pre>
+
+    <pre><code>Copilot Chat (voorbeeld API artifacts genereren)
+
+Gebruik ai/prompts/api/myapi-happy-flow.prompt.md
+Genereer:
+- Feature file: features/myapi/api/myapi-happy-flow.feature
+- Step definitions: steps/myapi/api/myapi-happy-flow.steps.ts
+
+Regels:
+- Gherkin in het Engels, concreet en testbaar
+- Assertions in steps
+- Gebruik config/myapi.config.ts voor baseUrl en specPath (als die nog niet bestaat, maak hem aan)</code></pre>
+
+    <h3 id="integratie">Aanpak integratie testen (API + DB)</h3>
+    <p><strong>Voorbeeld in repo:</strong> bookstore DB steps + gedeelde API steps patterns.</p>
+    <ul>
+      <li>DB feature: <code>features/bookstore/db/bookstore-get-books-from-database.feature</code></li>
+      <li>DB steps: <code>steps/bookstore/db/db.steps.ts</code> (mysql2/promise + retry + docker bootstrap)</li>
+      <li>Prompt voorbeeld (API ↔ DB vergelijking): <code>ai/prompts/api/get-books-by-author.prompt.md</code></li>
+    </ul>
+    <ol>
+      <li>
+        Zorg dat DB-ENV is gezet (lokaal via <code>.env</code>). De repo leest dit via <code>config/project.config.ts</code>.
+      </li>
+      <li>
+        Beschrijf je integratie-flow in Gherkin als expliciete cross-layer stappen, bijv.:
+        <ul>
+          <li><em>When I create book via API</em></li>
+          <li><em>Then the database should contain that book</em></li>
+        </ul>
+      </li>
+      <li>
+        Laat Copilot Chat steps genereren die:
+        <ul>
+          <li>API calls doen met Playwright <code>request</code></li>
+          <li>DB verify doen met mysql client (zoals bookstore)</li>
+          <li>shared state opslaan op <code>world</code> (pattern in gedeelde steps)</li>
+        </ul>
+      </li>
+    </ol>
+
+    <pre><code>Copilot Chat (voorbeeld integratie prompt)
+
+Maak een nieuwe prompt voor een integratie test (API + DB).
+Scenario: via API een record aanmaken, daarna in de database verifiëren dat het record bestaat.
+Sla op als: ai/prompts/e2e/myapi-create-and-verify-db.prompt.md
+
+Output locaties:
+- Feature file: features/myapi/e2e/myapi-create-and-verify-db.feature
+- Step definitions: steps/myapi/e2e/myapi-create-and-verify-db.steps.ts
+
+Regels:
+- Gherkin in het Engels, business-georiënteerd
+- API via Playwright request
+- DB via mysql2/promise (pattern zoals steps/bookstore/db/db.steps.ts)
+- Gebruik world om API response data (id) te delen tussen stappen</code></pre>
+
+    <pre><code>Copilot Chat (voorbeeld integratie artifacts genereren)
+
+Gebruik ai/prompts/e2e/myapi-create-and-verify-db.prompt.md
+Genereer feature + steps + (indien nodig) helpers.
+
+Let op:
+- Voeg retry/wait toe waar nodig (DB kan eventual consistent zijn)
+- Maak duidelijke assertions (bestaat record met juiste velden)
+- Geen hardcoded secrets; lees DB settings uit config/project.config.ts</code></pre>
+
+    <h3 id="e2e">Aanpak E2E testen (UI + API + DB)</h3>
+    <p><strong>Voorbeeld in repo:</strong> letsshop E2E flow, plus een cross-layer prompt als startpunt.</p>
+    <ul>
+      <li>Werkend E2E voorbeeld: <code>features/letsshop/e2e/shopping-cart-e2e-tests.feature</code></li>
+      <li>Cross-layer prompt idee: <code>ai/prompts/e2e/login-and-create-book.prompt.md</code></li>
+    </ul>
+    <ol>
+      <li>Start met UI flow (video → prompt → POM) zoals bij UI hierboven.</li>
+      <li>Voeg alleen daarna API/DB verificaties toe als aparte Gherkin stappen (expliciet, business-georiënteerd).</li>
+      <li>Hou step definitions “thin”: UI acties in page objects; assertions in steps.</li>
+    </ol>
+
+    <pre><code>Copilot Chat (voorbeeld E2E prompt)
+
+  Maak een nieuwe E2E prompt (UI + API + DB).
+  Input:
+  - UI video: specs/letsshop/videos/my-e2e-flow.mp4
+  - Eventuele API endpoints die moeten worden geverifieerd
+  - DB check (welke tabel/velden)
+
+  Sla op als: ai/prompts/e2e/my-e2e-flow.prompt.md
+
+  Output locaties:
+  - Feature file: features/letsshop/e2e/my-e2e-flow.feature
+  - Step definitions: steps/letsshop/e2e/my-e2e-flow.steps.ts
+  - Page Objects: pageobjects/letsshop/*</code></pre>
+
+    <pre><code>Copilot Chat (voorbeeld E2E artifacts genereren)
+
+  Gebruik ai/prompts/e2e/my-e2e-flow.prompt.md
+  Genereer:
+  - Feature file + steps + page objects
+
+  Regels:
+  - UI acties in POM; steps blijven dun
+  - API/DB checks als aparte Then-stappen
+  - Deel state via world (bijv. orderId) en log relevante info in Allure steps</code></pre>
+
+    <h3 id="conventies">Conventies (belangrijk)</h3>
+    <ul>
+      <li>Gebruik <strong>kebab-case</strong> voor flow/scenario namen (geen spaties).</li>
+      <li>Folder structuur: <code>features/&lt;sut&gt;/{api,db,ui,e2e}</code> en <code>steps/&lt;sut&gt;/{api,db,ui,e2e}</code>.</li>
+      <li>Gherkin steps in <strong>English</strong>, business-georiënteerd, concreet (geen “click x”).</li>
+      <li>Selectors: niet gokken uit video; gebruik placeholders (bijv. <code>data-test-id</code>) en vul later in de POM in.</li>
+    </ul>
+
+    <h3 id="troubleshooting">Troubleshooting</h3>
+    <ul>
+      <li>
+        “No tests found”: check of je <code>npm run bddgen</code> hebt gedraaid; Playwright runt de gegenereerde specs onder <code>.features-gen/</code>.
+      </li>
+      <li>
+        Scenario Outline titels in Allure: voeg <code>&lt;kolom&gt;</code> placeholders toe in de titel of gebruik title-format (zie <code>ai/playwright-bdd-style.md</code>).
+      </li>
+      <li>
+        Flaky UI: stabiliseer locators/waits in de page object, niet in Gherkin.
+      </li>
+    </ul>
+
+    <p class="hint">Meer detail: zie <code>ai/video-to-test-readme.md</code>, <code>ai/ai-instructions.md</code> en <code>ai/playwright-bdd-style.md</code>.</p>
+  </div>
 </body>
 </html>
