@@ -14,4 +14,9 @@ playwright-report/
 artifacts/
 videos/
 
+# Local video examples and extracted frames (do not commit)
+ai/video-examples/**/*.mp4
+ai/video-examples/**/frame_*.png
+ai/video-examples/**/scene_*.png
+
 ghpages/

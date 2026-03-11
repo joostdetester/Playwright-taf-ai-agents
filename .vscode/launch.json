@@ -1,0 +1,63 @@
+{
+  // VS Code debugger configs for Playwright (incl. playwright-bdd generated specs).
+  // Usage: Run `npm run bddgen` once, set breakpoints in `steps/**/*.ts`, then start one of these.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Playwright: Debug register-user (BDD)",
+      "type": "pwa-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/@playwright/test/cli.js",
+      "args": [
+        "test",
+        ".features-gen/features/automationexercise/ui/register-user.feature.spec.js",
+        "--headed",
+        "--project=chromium"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "PWDEBUG": "1"
+      },
+      "autoAttachChildProcesses": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Playwright: Debug generated spec (current file)",
+      "type": "pwa-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/@playwright/test/cli.js",
+      "args": [
+        "test",
+        "${file}",
+        "--headed",
+        "--project=chromium"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+        "PWDEBUG": "1"
+      },
+      "autoAttachChildProcesses": true,
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "sourceMaps": true,
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ]
+    }
+  ]
+}

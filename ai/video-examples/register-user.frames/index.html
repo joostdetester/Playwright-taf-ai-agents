@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>register-user.mp4 frames</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 16px; }
+      .hint { margin: 0 0 12px 0; color: #444; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      figure { margin: 0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+      figcaption { padding: 8px 10px; font-size: 12px; background: #fafafa; border-top: 1px solid #eee; }
+      img { width: 100%; height: auto; display: block; background: #000; }
+      a { text-decoration: none; color: inherit; }
+      .top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+      input { padding: 6px 8px; min-width: 260px; }
+      .muted { color: #666; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1 style="margin:0; font-size: 18px;">Frames: register-user.mp4</h1>
+      <div class="muted">(1 fps; frame_0001 ≈ 1s)</div>
+    </div>
+    <p class="hint">Tip: filter op <strong>"signup"</strong>, <strong>"account"</strong>, <strong>"create"</strong>, of spring naar frame rond het moment dat je op "Create Account" klikt.</p>
+
+    <label>
+      Filter (by filename):
+      <input id="filter" type="text" placeholder="e.g. 0030" />
+    </label>
+
+    <div id="grid" class="grid" style="margin-top: 12px;"></div>
+
+    <script>
+      // This list is intentionally minimal/hand-maintained.
+      // If you re-extract frames, just refresh and the gallery still works for existing names.
+      const totalFrames = 66; // duration ~65.6s at 1 fps
+
+      function pad(n) { return String(n).padStart(4, '0'); }
+
+      const frames = Array.from({ length: totalFrames }, (_, i) => {
+        const idx = i + 1;
+        return `frame_${pad(idx)}.png`;
+      });
+
+      const grid = document.getElementById('grid');
+      const filter = document.getElementById('filter');
+
+      function render() {
+        const q = (filter.value || '').trim().toLowerCase();
+        const items = q ? frames.filter(f => f.toLowerCase().includes(q)) : frames;
+
+        grid.innerHTML = '';
+        for (const f of items) {
+          const fig = document.createElement('figure');
+          const a = document.createElement('a');
+          a.href = f;
+          a.target = '_blank';
+
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.src = f;
+          img.alt = f;
+
+          const cap = document.createElement('figcaption');
+          cap.textContent = f;
+
+          a.appendChild(img);
+          fig.appendChild(a);
+          fig.appendChild(cap);
+          grid.appendChild(fig);
+        }
+      }
+
+      filter.addEventListener('input', render);
+      render();
+    </script>
+  </body>
+</html>

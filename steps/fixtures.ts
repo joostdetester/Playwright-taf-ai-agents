@@ -18,7 +18,7 @@ export const test = base.extend<BddFixtures & { _allureMeta: void }>({
         await safeAllure(() => allure.tags(...tags));
       }
 
-      const sutTags = new Set(['bookstore', 'greenkart', 'letsshop', 'petstore']);
+      const sutTags = new Set(['bookstore', 'greenkart', 'letsshop', 'petstore', 'automationexercise']);
       const typeTags = new Set(['api', 'ui', 'db', 'e2e']);
 
       const sut = tags.find((t) => sutTags.has(t));
