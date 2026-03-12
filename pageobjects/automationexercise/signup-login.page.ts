@@ -150,6 +150,9 @@ export class AutomationExerciseSignupLoginPage {
     const button = this.createAccountButton();
     await button.scrollIntoViewIfNeeded();
 
+    // Cookie consent can appear late and intercept the click.
+    await this.dismissCookieConsentIfPresent();
+
     // Scope everything to the registration form to avoid accidentally interacting
     // with the footer subscription form.
     // Prefer the closest form ancestor of the Create Account button.
@@ -185,7 +188,7 @@ export class AutomationExerciseSignupLoginPage {
       const postSignup = this.page
         .waitForResponse(
           (r) => r.request().method() === 'POST' && /automationexercise\.com/i.test(r.url()),
-          { timeout: 3_000 },
+          { timeout: 10_000 },
         )
         .catch(() => null);
 
@@ -253,7 +256,7 @@ export class AutomationExerciseSignupLoginPage {
       }
 
       // Success signal: either URL changes, or the success heading appears.
-      const successTimeoutMs = 8_000;
+      const successTimeoutMs = 20_000;
       const success = await new Promise<boolean>((resolve) => {
         let remaining = 2;
         let resolved = false;
