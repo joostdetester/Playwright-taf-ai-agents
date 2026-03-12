@@ -117,6 +117,13 @@ GitLab CI
 	- `TEST_USER_EMAIL`
 	- `TEST_USER_PASSWORD`
 
+- Recommended GitLab CI/CD variables for the `automationexercise` suite (required for the "existing account" login scenario):
+	- `AE_EMAIL`
+	- `AE_PASSWORD`
+	- `AE_NAME`
+
+	Local development: store real values in `.vscode/.env.agents` (gitignored). CI should use GitLab CI/CD variables.
+
 Feature tags
 - Every feature has `@all`.
 - Every feature has its SUT tag: `@bookstore`, `@greenkart`, `@letsshop`, `@petstore`.

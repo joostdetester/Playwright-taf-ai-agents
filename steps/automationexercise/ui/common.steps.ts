@@ -30,7 +30,7 @@ Then('the user should be logged in as {string}', async ({ page }, expectedName: 
 });
 
 Then('the user should be logged in as the created user', async ({ page, world }) => {
-  const createdName = (world as any)?.ae?.name as string | undefined;
+  const createdName = ((world as any)?.ae?.name as string | undefined) ?? process.env.AE_NAME;
   if (!createdName) throw new Error('No created user found in world. Ensure the signup step ran successfully.');
 
   const home = new AutomationExerciseHomePage(page);
