@@ -17,7 +17,7 @@ const allowedCountries = ['India', 'United States', 'Canada', 'Australia', 'Isra
 When('the user signs up with a generated name and a unique email', async ({ page, world }) => {
   const auth = new AutomationExerciseSignupLoginPage(page);
   const name = faker.name.firstName();
-  const uniqueEmail = faker.internet.email(name, undefined, 'example.com').toLowerCase();
+  const uniqueEmail = `${faker.internet.userName(name)}.${Date.now()}.${faker.datatype.number({ min: 1000, max: 9999 })}@example.com`.toLowerCase();
 
   await auth.signupNewUser({ name, email: uniqueEmail });
 
@@ -30,7 +30,7 @@ When('the user signs up with a generated name and a unique email', async ({ page
 
 When('the user signs up as {string} with a unique email', async ({ page, world }, name: string) => {
   const auth = new AutomationExerciseSignupLoginPage(page);
-  const uniqueEmail = faker.internet.email(name, undefined, 'example.com').toLowerCase();
+  const uniqueEmail = `${faker.internet.userName(name)}.${Date.now()}.${faker.datatype.number({ min: 1000, max: 9999 })}@example.com`.toLowerCase();
 
   await auth.signupNewUser({ name, email: uniqueEmail });
 

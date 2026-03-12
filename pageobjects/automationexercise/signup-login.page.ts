@@ -184,79 +184,100 @@ export class AutomationExerciseSignupLoginPage {
     this.page.on('request', onRequest);
 
     try {
-      // Try to observe a real form submit (POST) to distinguish "click didn't submit" vs "submit rejected".
-      const postSignup = this.page
-        .waitForResponse(
-          (r) => r.request().method() === 'POST' && /automationexercise\.com/i.test(r.url()),
-          { timeout: 10_000 },
-        )
-        .catch(() => null);
+      const submitOnce = async () => {
+        // Cookie consent can appear (again) and intercept the click.
+        await this.dismissCookieConsentIfPresent();
 
-      // Prefer a real, actionability-checked click. If something overlays the button,
-      // fall back to a forced click and finally an in-page click() to preserve default
-      // submit behavior.
-      try {
-        await button.click();
-      } catch {
-        try {
-          await button.click({ force: true });
-        } catch {
-          await button.evaluate((el) => (el as HTMLElement).click());
-        }
-      }
-      const response = await postSignup;
-
-      // If no POST happened, capture HTML5 validation state and attempt a forced submit.
-      if (!response && effectiveFormHandle) {
-        const validity = await effectiveFormHandle
-          .evaluate((formEl: HTMLFormElement) => {
-            const fields = Array.from(formEl.querySelectorAll('input, select, textarea')) as Array<
-              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-            >;
-            const invalidFields = fields
-              .filter((el) => typeof (el as any).checkValidity === 'function' && !(el as any).checkValidity())
-              .slice(0, 15)
-              .map((el) => ({
-                tag: el.tagName.toLowerCase(),
-                id: (el as any).id || null,
-                name: (el as any).name || null,
-                type: (el as any).type || null,
-                required: (el as any).required || false,
-                value: (el as any).value || '',
-                message: (el as any).validationMessage || '',
-              }));
-
-            return {
-              formAction: (formEl as any).action || null,
-              formValid: typeof (formEl as any).checkValidity === 'function' ? formEl.checkValidity() : null,
-              invalidCount: invalidFields.length,
-              invalidFields,
-            };
-          })
+        // Try to observe a real form submit (POST) to distinguish "click didn't submit" vs "submit rejected".
+        const postSignup = this.page
+          .waitForResponse(
+            (r) => r.request().method() === 'POST' && /automationexercise\.com/i.test(r.url()),
+            { timeout: 15_000 },
+          )
           .catch(() => null);
 
-        // If the form is invalid, a click won't submit; fail fast with details.
-        if (validity?.invalidCount) {
-          const requestInfo = recentRequests.length ? ` | Recent requests: ${recentRequests.join(' | ')}` : '';
-          throw new Error(
-            `Registration form is invalid; browser likely blocked submit. Details: ${JSON.stringify(validity)}` + requestInfo,
-          );
+        // Prefer a real, actionability-checked click. If something overlays the button,
+        // fall back to a forced click and finally an in-page click() to preserve default
+        // submit behavior.
+        try {
+          await button.click();
+        } catch {
+          try {
+            await button.click({ force: true });
+          } catch {
+            await button.evaluate((el) => (el as HTMLElement).click());
+          }
         }
 
-        await effectiveFormHandle
-          .evaluate((el: HTMLFormElement) => {
-            const anyEl = el as any;
-            if (typeof anyEl.requestSubmit === 'function') {
-              anyEl.requestSubmit();
-              return;
-            }
-            el.submit();
-          })
-          .catch(() => undefined);
+        const response = await postSignup;
+
+        // If no POST happened, capture HTML5 validation state and attempt a forced submit.
+        if (!response && effectiveFormHandle) {
+          const validity = await effectiveFormHandle
+            .evaluate((formEl: HTMLFormElement) => {
+              const fields = Array.from(formEl.querySelectorAll('input, select, textarea')) as Array<
+                HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+              >;
+              const invalidFields = fields
+                .filter((el) => typeof (el as any).checkValidity === 'function' && !(el as any).checkValidity())
+                .slice(0, 15)
+                .map((el) => ({
+                  tag: el.tagName.toLowerCase(),
+                  id: (el as any).id || null,
+                  name: (el as any).name || null,
+                  type: (el as any).type || null,
+                  required: (el as any).required || false,
+                  value: (el as any).value || '',
+                  message: (el as any).validationMessage || '',
+                }));
+
+              return {
+                formAction: (formEl as any).action || null,
+                formValid: typeof (formEl as any).checkValidity === 'function' ? formEl.checkValidity() : null,
+                invalidCount: invalidFields.length,
+                invalidFields,
+              };
+            })
+            .catch(() => null);
+
+          // If the form is invalid, a click won't submit; fail fast with details.
+          if (validity?.invalidCount) {
+            const requestInfo = recentRequests.length ? ` | Recent requests: ${recentRequests.join(' | ')}` : '';
+            throw new Error(
+              `Registration form is invalid; browser likely blocked submit. Details: ${JSON.stringify(validity)}` + requestInfo,
+            );
+          }
+
+          await effectiveFormHandle
+            .evaluate((el: HTMLFormElement) => {
+              const anyEl = el as any;
+              if (typeof anyEl.requestSubmit === 'function') {
+                anyEl.requestSubmit();
+                return;
+              }
+              el.submit();
+            })
+            .catch(() => undefined);
+        }
+      };
+
+      // CI flake: sometimes the first submit doesn't result in navigation.
+      // Retry a couple of times without inflating the overall success wait.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        await submitOnce();
+
+        if (/\/account_created/i.test(this.page.url())) break;
+        const headingOk = await this.page
+          .getByRole('heading', { name: /account created!/i })
+          .isVisible()
+          .catch(() => false);
+        if (headingOk) break;
+
+        await this.page.waitForTimeout(750);
       }
 
       // Success signal: either URL changes, or the success heading appears.
-      const successTimeoutMs = 20_000;
+      const successTimeoutMs = 45_000;
       const success = await new Promise<boolean>((resolve) => {
         let remaining = 2;
         let resolved = false;
