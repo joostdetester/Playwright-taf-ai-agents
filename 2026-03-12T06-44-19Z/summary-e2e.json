@@ -1,0 +1,19 @@
+{
+  "suite": "e2e",
+  "total": 11,
+  "passed": 3,
+  "failed": 6,
+  "skipped": 0,
+  "failedTests": [
+    "user registers a new account and deletes it",
+    "user completes the practice page flow",
+    "user logs in and deletes their account",
+    "user logs in with a persisted account",
+    "user places an order for two products",
+    "user registers a new account and deletes it"
+  ],
+  "status": "FAILED",
+  "start": "2026-03-12T06:42:27.851Z",
+  "stop": "2026-03-12T06:43:53.203Z",
+  "durationMs": 85352
+}
