@@ -1,5 +1,5 @@
 "BROKEN","EPIC","FAILED","FEATURE","PASSED","SKIPPED","STORY","UNKNOWN"
-"0","bookstore","0","db","1","0","","0"
-"0","bookstore","0","ui","2","0","","0"
-"0","bookstore","0","e2e","2","0","","0"
 "0","bookstore","0","api","1","0","","0"
+"0","bookstore","0","e2e","2","0","","0"
+"0","bookstore","0","ui","2","0","","0"
+"0","bookstore","0","db","1","0","","0"
