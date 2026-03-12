@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","8596","user places an order for multiple vegetables","","2026-03-12","passed","2026-03-12","greenkart checkout","features/greenkart/ui/green-kart-ui-tests.feature.spec.js","",""
+"","8880","user places an order for multiple vegetables","","2026-03-12","passed","2026-03-12","greenkart checkout","features/greenkart/ui/green-kart-ui-tests.feature.spec.js","",""
