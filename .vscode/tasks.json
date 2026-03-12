@@ -2,6 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "BDD: Generate feature specs",
+      "type": "shell",
+      "presentation": { "reveal": "always" },
+      "command": "npm run bddgen",
+      "group": "test"
+    },
+    {
       "label": "MCP: Start filesystem server",
       "type": "shell",
       "presentation": { "reveal": "always" },
