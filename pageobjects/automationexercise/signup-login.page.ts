@@ -26,6 +26,12 @@ export class AutomationExerciseSignupLoginPage {
     await expect(loginPassword).toBeVisible();
   }
 
+  async assertInvalidLoginError() {
+    // On AutomationExercise this is typically shown as a red paragraph under the login form.
+    const message = this.page.getByText(/your email or password is incorrect!/i);
+    await expect(message).toBeVisible({ timeout: 10_000 });
+  }
+
   async signupNewUser(params: { name: string; email: string }) {
     await this.assertNewUserSignupVisible();
 
@@ -49,18 +55,22 @@ export class AutomationExerciseSignupLoginPage {
   }
 
   async optInNewsletterAndOffers() {
+    await this.dismissCookieConsentIfPresent();
+
     // These checkboxes may or may not be present depending on the page version.
     const newsletter = this.page.locator('#newsletter, input[name="newsletter"], [data-qa="newsletter"]').first();
-    if (await newsletter.isVisible().catch(() => false)) {
-      await newsletter.check().catch(async () => {
-        await newsletter.click();
+    if (await newsletter.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await newsletter.scrollIntoViewIfNeeded().catch(() => {});
+      await newsletter.check({ timeout: 5000 }).catch(async () => {
+        await newsletter.click({ timeout: 5000 });
       });
     }
 
     const offers = this.page.locator('#optin, input[name="optin"], [data-qa="optin"]').first();
-    if (await offers.isVisible().catch(() => false)) {
-      await offers.check().catch(async () => {
-        await offers.click();
+    if (await offers.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await offers.scrollIntoViewIfNeeded().catch(() => {});
+      await offers.check({ timeout: 5000 }).catch(async () => {
+        await offers.click({ timeout: 5000 });
       });
     }
   }
@@ -143,8 +153,12 @@ export class AutomationExerciseSignupLoginPage {
     // Scope everything to the registration form to avoid accidentally interacting
     // with the footer subscription form.
     // Prefer the closest form ancestor of the Create Account button.
+    // Some pages associate the button via `button.form` (not necessarily as an ancestor).
     const formHandle = await button
-      .evaluateHandle((el) => el.closest('form'))
+      .evaluateHandle((el) => {
+        const btn = el as unknown as HTMLButtonElement;
+        return btn.closest('form') || btn.form || null;
+      })
       .catch(() => null);
 
     // Fallback: some pages are inconsistent; locate the form containing the password field.
@@ -176,11 +190,16 @@ export class AutomationExerciseSignupLoginPage {
         .catch(() => null);
 
       // Prefer a real, actionability-checked click. If something overlays the button,
-      // fall back to dispatching the click event directly on the element.
+      // fall back to a forced click and finally an in-page click() to preserve default
+      // submit behavior.
       try {
         await button.click();
       } catch {
-        await button.dispatchEvent('click');
+        try {
+          await button.click({ force: true });
+        } catch {
+          await button.evaluate((el) => (el as HTMLElement).click());
+        }
       }
       const response = await postSignup;
 
@@ -344,7 +363,64 @@ export class AutomationExerciseSignupLoginPage {
 
     await loginEmail.fill(params.email);
     await loginPassword.fill(params.password);
-    await this.loginButton().click();
+
+    const loginButton = this.loginButton();
+    // Cookie consent can appear late and intercept the click; retry a couple of times.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await this.dismissCookieConsentIfPresent();
+      try {
+        await loginButton.click({ timeout: 5000 });
+        return;
+      } catch (error) {
+        const overlayVisible = await this.page
+          .locator('.fc-dialog-overlay, .fc-consent-root, .fc-dialog')
+          .first()
+          .isVisible({ timeout: 1000 })
+          .catch(() => false);
+
+        if (!overlayVisible || attempt === 2) throw error;
+      }
+    }
+  }
+
+  private async dismissCookieConsentIfPresent() {
+    const consentRoot = this.page.locator('.fc-consent-root, .fc-dialog, #cookieconsent, .cookie-consent, [aria-label*="cookie" i]');
+
+    // Short, non-blocking attempt: if the banner isn't present, do nothing.
+    const isVisible = await consentRoot.first().isVisible({ timeout: 2000 }).catch(() => false);
+    if (!isVisible) return;
+
+    const acceptName = /accept|agree|consent|ok|got it/i;
+
+    // Prefer accessible button/link first.
+    const acceptButton = consentRoot.getByRole('button', { name: acceptName }).first();
+    const acceptLink = consentRoot.getByRole('link', { name: acceptName }).first();
+
+    if (await acceptButton.isVisible().catch(() => false)) {
+      await acceptButton.scrollIntoViewIfNeeded().catch(() => {});
+      await acceptButton.click({ timeout: 5000 }).catch(() => {});
+      await consentRoot.first().waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+      return;
+    }
+
+    if (await acceptLink.isVisible().catch(() => false)) {
+      await acceptLink.scrollIntoViewIfNeeded().catch(() => {});
+      await acceptLink.click({ timeout: 5000 }).catch(() => {});
+      await consentRoot.first().waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+      return;
+    }
+
+    // Fallback: some banners use non-semantic elements.
+    const acceptAny = consentRoot
+      .locator('button, a, [role="button"], input[type="button"], input[type="submit"], div, span')
+      .filter({ hasText: acceptName })
+      .first();
+
+    if (await acceptAny.isVisible().catch(() => false)) {
+      await acceptAny.scrollIntoViewIfNeeded().catch(() => {});
+      await acceptAny.click({ timeout: 5000 }).catch(() => {});
+      await consentRoot.first().waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
+    }
   }
 
   private signupNameByDataQa() {

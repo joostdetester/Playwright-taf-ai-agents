@@ -111,11 +111,17 @@ When('the user creates the account', async ({ page }) => {
   await auth.submitAccountRegistration();
 });
 
-Then('the account created message should be visible', async ({ page, world }) => {
+Then('the account created message should be visible', async ({ page, world, $testInfo }) => {
   const created = new AutomationExerciseAccountCreatedPage(page);
   await created.assertAccountCreated();
   const ae = (world as AeWorld).ae;
-  if (ae?.email && ae?.password && ae?.name) {
+
+  const rawTags: string[] = Array.isArray(($testInfo as any)?.tags) ? (($testInfo as any).tags as string[]) : [];
+  const normalizedTags = rawTags.map((t) => String(t ?? '').trim().replace(/^@/, '')).filter(Boolean);
+  const isDeleteAccountScenario = normalizedTags.includes('delete-account');
+
+  // Don't persist credentials for an account we delete in the same scenario.
+  if (!isDeleteAccountScenario && ae?.email && ae?.password && ae?.name) {
     saveAeUser({ name: ae.name, email: ae.email, password: ae.password });
   }
 });

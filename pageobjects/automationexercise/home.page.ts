@@ -6,13 +6,38 @@ export class AutomationExerciseHomePage {
   async goto(baseUrl: string) {
     const normalized = String(baseUrl ?? '').trim();
     const targetBaseUrl = /automationexercise\.com/i.test(normalized) ? normalized : 'https://automationexercise.com';
-    await this.page.goto(targetBaseUrl);
+    await this.page.goto(targetBaseUrl, { waitUntil: 'domcontentloaded' });
   }
 
   async assertLoaded() {
-    // Keep this assertion resilient: the homepage markup can vary, but the top nav is stable.
-    await expect(this.page).toHaveTitle(/automation/i, { timeout: 15_000 });
-    await expect(this.page.getByRole('link', { name: /signup\s*\/\s*login/i })).toBeVisible({ timeout: 15_000 });
+    // Keep this assertion resilient: the homepage markup can vary.
+    // AutomationExercise sometimes shows a temporary "heavy load / queue full" interstitial.
+    // In that case, retry a few reloads before failing.
+    const deadline = Date.now() + 90_000;
+
+    while (Date.now() < deadline) {
+      const queueVisible = await this.page
+        .getByRole('heading', { name: /heavy load|queue full/i })
+        .first()
+        .isVisible({ timeout: 1000 })
+        .catch(() => false);
+
+      if (queueVisible) {
+        await this.page.waitForTimeout(3000);
+        await this.page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
+        continue;
+      }
+
+      const signupLoginLink = this.page.getByRole('link', { name: /signup\s*\/\s*login/i });
+      if (await signupLoginLink.isVisible({ timeout: 2000 }).catch(() => false)) {
+        await expect(signupLoginLink).toBeVisible({ timeout: 15_000 });
+        return;
+      }
+
+      await this.page.waitForTimeout(1000);
+    }
+
+    throw new Error(`AutomationExercise home did not load in time. Current URL: ${this.page.url()}`);
   }
 
   async openSignupLogin() {
@@ -23,7 +48,7 @@ export class AutomationExerciseHomePage {
 
   async assertLoggedInAs(expectedName: string) {
     const pattern = new RegExp(`logged\\s+in\\s+as\\s+${this.escapeRegex(expectedName)}`, 'i');
-    await expect(this.page.getByText(pattern)).toBeVisible();
+    await expect(this.page.getByText(pattern)).toBeVisible({ timeout: 15_000 });
   }
 
   async logout() {

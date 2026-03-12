@@ -8,15 +8,30 @@ const testDir = defineBddConfig({
 
 const isDebug = !!process.env.PWDEBUG;
 
+const viewportWidth = Number.parseInt(process.env.PW_VIEWPORT_WIDTH ?? '', 10);
+const viewportHeight = Number.parseInt(process.env.PW_VIEWPORT_HEIGHT ?? '', 10);
+const deviceScaleFactor = Number.parseFloat(process.env.PW_DEVICE_SCALE_FACTOR ?? '');
+
+const viewport = {
+  width: Number.isFinite(viewportWidth) ? viewportWidth : 1920,
+  height: Number.isFinite(viewportHeight) ? viewportHeight : 1080,
+};
+
+const resolvedDeviceScaleFactor = Number.isFinite(deviceScaleFactor) ? deviceScaleFactor : 1;
+
 export default defineConfig({
   testDir,
-  timeout: 30_000,
+  timeout: 90_000,
   use: {
-    // In debug mode: use a deterministic viewport (matches your current screen viewport).
+    // Deterministic viewport across machines/monitors.
+    // Override via env vars: PW_VIEWPORT_WIDTH, PW_VIEWPORT_HEIGHT, PW_DEVICE_SCALE_FACTOR.
     headless: isDebug ? false : true,
-    viewport: isDebug ? { width: 1358, height: 1270 } : { width: 1280, height: 720 },
-    // Keep window stable in debug (maximize makes viewport vary).
-    launchOptions: isDebug ? { args: ['--window-position=0,0'] } : undefined,
+    viewport,
+    deviceScaleFactor: resolvedDeviceScaleFactor,
+    // Keep window stable in headed mode (maximize makes viewport vary).
+    launchOptions: isDebug
+      ? { args: [`--window-size=${viewport.width},${viewport.height}`, '--window-position=0,0'] }
+      : undefined,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'retain-on-failure'
