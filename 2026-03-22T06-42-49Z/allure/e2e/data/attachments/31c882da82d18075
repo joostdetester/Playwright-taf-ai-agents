@@ -1,0 +1,404 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e5]:
+      - link "Website for practice automation" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img "Website for practice automation" [ref=e9]
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link " Home" [ref=e14] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e15]: 
+            - text: Home
+        - listitem [ref=e16]:
+          - link " Products" [ref=e17] [cursor=pointer]:
+            - /url: /products
+            - generic [ref=e18]: 
+            - text: Products
+        - listitem [ref=e19]:
+          - link " Cart" [ref=e20] [cursor=pointer]:
+            - /url: /view_cart
+            - generic [ref=e21]: 
+            - text: Cart
+        - listitem [ref=e22]:
+          - link " Signup / Login" [ref=e23] [cursor=pointer]:
+            - /url: /login
+            - generic [ref=e24]: 
+            - text: Signup / Login
+        - listitem [ref=e25]:
+          - link " Test Cases" [ref=e26] [cursor=pointer]:
+            - /url: /test_cases
+            - generic [ref=e27]: 
+            - text: Test Cases
+        - listitem [ref=e28]:
+          - link " API Testing" [ref=e29] [cursor=pointer]:
+            - /url: /api_list
+            - generic [ref=e30]: 
+            - text: API Testing
+        - listitem [ref=e31]:
+          - link " Video Tutorials" [ref=e32] [cursor=pointer]:
+            - /url: https://www.youtube.com/c/AutomationExercise
+            - generic [ref=e33]: 
+            - text: Video Tutorials
+        - listitem [ref=e34]:
+          - link " Contact us" [ref=e35] [cursor=pointer]:
+            - /url: /contact_us
+            - generic [ref=e36]: 
+            - text: Contact us
+  - generic [ref=e40]:
+    - generic [ref=e41]:
+      - heading "Enter Account Information" [level=2] [ref=e42]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: Title
+          - generic [ref=e47]:
+            - radio "Mr." [ref=e49]
+            - text: Mr.
+          - generic [ref=e51]:
+            - radio "Mrs." [checked] [ref=e53]
+            - text: Mrs.
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - text: Name
+            - superscript [ref=e56]: "*"
+          - textbox "Name *" [ref=e57]: Aurelia
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - text: Email
+            - superscript [ref=e60]: "*"
+          - textbox "Email *" [disabled] [ref=e61]: aurelia_beahan.1774161654812.4211@example.com
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - text: Password
+            - superscript [ref=e64]: "*"
+          - textbox "Password *" [ref=e65]: 59rr0dvwt4a6
+        - generic [ref=e66]:
+          - generic [ref=e67]: Date of Birth
+          - generic [ref=e68]:
+            - combobox [ref=e71]:
+              - option "Day"
+              - option "1"
+              - option "2"
+              - option "3"
+              - option "4"
+              - option "5"
+              - option "6"
+              - option "7"
+              - option "8"
+              - option "9"
+              - option "10"
+              - option "11"
+              - option "12"
+              - option "13"
+              - option "14" [selected]
+              - option "15"
+              - option "16"
+              - option "17"
+              - option "18"
+              - option "19"
+              - option "20"
+              - option "21"
+              - option "22"
+              - option "23"
+              - option "24"
+              - option "25"
+              - option "26"
+              - option "27"
+              - option "28"
+              - option "29"
+              - option "30"
+              - option "31"
+            - combobox [ref=e74]:
+              - option "Month"
+              - option "January"
+              - option "February"
+              - option "March"
+              - option "April"
+              - option "May" [selected]
+              - option "June"
+              - option "July"
+              - option "August"
+              - option "September"
+              - option "October"
+              - option "November"
+              - option "December"
+            - combobox [ref=e77]:
+              - option "Year"
+              - option "2021"
+              - option "2020"
+              - option "2019"
+              - option "2018"
+              - option "2017"
+              - option "2016"
+              - option "2015"
+              - option "2014"
+              - option "2013"
+              - option "2012"
+              - option "2011"
+              - option "2010"
+              - option "2009"
+              - option "2008"
+              - option "2007"
+              - option "2006"
+              - option "2005"
+              - option "2004"
+              - option "2003"
+              - option "2002"
+              - option "2001"
+              - option "2000"
+              - option "1999"
+              - option "1998"
+              - option "1997"
+              - option "1996"
+              - option "1995"
+              - option "1994"
+              - option "1993"
+              - option "1992"
+              - option "1991"
+              - option "1990"
+              - option "1989"
+              - option "1988"
+              - option "1987"
+              - option "1986"
+              - option "1985"
+              - option "1984"
+              - option "1983"
+              - option "1982"
+              - option "1981"
+              - option "1980"
+              - option "1979"
+              - option "1978"
+              - option "1977"
+              - option "1976"
+              - option "1975"
+              - option "1974"
+              - option "1973"
+              - option "1972"
+              - option "1971" [selected]
+              - option "1970"
+              - option "1969"
+              - option "1968"
+              - option "1967"
+              - option "1966"
+              - option "1965"
+              - option "1964"
+              - option "1963"
+              - option "1962"
+              - option "1961"
+              - option "1960"
+              - option "1959"
+              - option "1958"
+              - option "1957"
+              - option "1956"
+              - option "1955"
+              - option "1954"
+              - option "1953"
+              - option "1952"
+              - option "1951"
+              - option "1950"
+              - option "1949"
+              - option "1948"
+              - option "1947"
+              - option "1946"
+              - option "1945"
+              - option "1944"
+              - option "1943"
+              - option "1942"
+              - option "1941"
+              - option "1940"
+              - option "1939"
+              - option "1938"
+              - option "1937"
+              - option "1936"
+              - option "1935"
+              - option "1934"
+              - option "1933"
+              - option "1932"
+              - option "1931"
+              - option "1930"
+              - option "1929"
+              - option "1928"
+              - option "1927"
+              - option "1926"
+              - option "1925"
+              - option "1924"
+              - option "1923"
+              - option "1922"
+              - option "1921"
+              - option "1920"
+              - option "1919"
+              - option "1918"
+              - option "1917"
+              - option "1916"
+              - option "1915"
+              - option "1914"
+              - option "1913"
+              - option "1912"
+              - option "1911"
+              - option "1910"
+              - option "1909"
+              - option "1908"
+              - option "1907"
+              - option "1906"
+              - option "1905"
+              - option "1904"
+              - option "1903"
+              - option "1902"
+              - option "1901"
+              - option "1900"
+        - generic [ref=e78]:
+          - checkbox "Sign up for our newsletter!" [checked] [ref=e79]
+          - text: Sign up for our newsletter!
+        - generic [ref=e80]:
+          - checkbox "Receive special offers from our partners!" [checked] [ref=e81]
+          - text: Receive special offers from our partners!
+        - heading "Address Information" [level=2] [ref=e82]
+        - paragraph [ref=e83]:
+          - generic [ref=e84]:
+            - text: First name
+            - superscript [ref=e85]: "*"
+          - textbox "First name *" [ref=e86]: Donny
+        - paragraph [ref=e87]:
+          - generic [ref=e88]:
+            - text: Last name
+            - superscript [ref=e89]: "*"
+          - textbox "Last name *" [ref=e90]: Heller
+        - paragraph [ref=e91]:
+          - generic [ref=e92]: Company
+          - textbox "Company" [ref=e93]: McClure and Sons
+        - paragraph [ref=e94]:
+          - generic [ref=e95]:
+            - text: Address
+            - superscript [ref=e96]: "*"
+            - text: (Street address, P.O. Box, Company name, etc.)
+          - textbox "Address * (Street address, P.O. Box, Company name, etc.)" [ref=e97]: 50040 Eleonore Views
+        - paragraph [ref=e98]:
+          - generic [ref=e99]: Address 2
+          - textbox "Address 2" [ref=e100]: Suite 978
+        - paragraph [ref=e101]:
+          - generic [ref=e102]:
+            - text: Country
+            - superscript [ref=e103]: "*"
+          - combobox "Country *" [ref=e104]:
+            - option "India"
+            - option "United States"
+            - option "Canada" [selected]
+            - option "Australia"
+            - option "Israel"
+            - option "New Zealand"
+            - option "Singapore"
+        - paragraph [ref=e105]:
+          - generic [ref=e106]:
+            - text: State
+            - superscript [ref=e107]: "*"
+          - textbox "State *" [ref=e108]: South Carolina
+        - paragraph [ref=e109]:
+          - generic [ref=e110]:
+            - text: City
+            - superscript [ref=e111]: "*"
+          - textbox "City * Zipcode *" [ref=e112]: South Coty
+        - paragraph [ref=e113]:
+          - generic [ref=e114]:
+            - text: Zipcode
+            - superscript [ref=e115]: "*"
+          - textbox [ref=e116]: "51042"
+        - paragraph [ref=e117]:
+          - generic [ref=e118]:
+            - text: Mobile Number
+            - superscript [ref=e119]: "*"
+          - textbox "Mobile Number *" [ref=e120]: "0021267358"
+        - button "Create Account" [ref=e121] [cursor=pointer]
+    - insertion [ref=e123]:
+      - iframe [ref=e125]:
+        - generic [active] [ref=f11e1]:
+          - generic [ref=f11e6]:
+            - generic [ref=f11e7]:
+              - link "Explore Power Switches" [ref=f11e10] [cursor=pointer]:
+                - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=Ccg_R946_adevLqKYhNEP8--d6A-6lZTchQHKx6_2yRXIxbLzvk0QASD9tJ6VAWC7BqAB07H5yAPIAQGpAic_HqQPYrY-qAMByAPLBKoE5gFP0HQPlWBbFBJOMTT7rbVMAmqoqn1YBIxvIWFHLImGH2EqjrfOGcMu4Xz_tU9BWmlATGzu06aOXnLkIkHDd-Ks20ueLFNvewPY6cjWwIpwBg-qfFZQPbf6AF7m5pY4t9mJjEOhmeVrKFW2_4w0VR002KxplBwCb0H2XaeLCyrDhHw0hlep-k-SkfDGUuCdu_8c8jLx0Ve-_cl9j7WV6LIVAsCS-5z2hnydf7krmNA_1NGgX80KBWqu50ARrY8x-GwYGghcmXlqjajQHFqqyE9Eml9sMo43sNmB6kpuPrHeiHlnPxpTM8AExPao1-UFiAWCj6OEWKAGLoAHuL3ElQGoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB5jFsQKoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCC8IgGEQARifAzIIioKAgICAgAg6DYBAgMCAgICAqIACqANIvf3BOli2oY6a87KTA5oJH2h0dHBzOi8vdWsucnMtb25saW5lLmNvbS93ZWIvYy-xCc6iMNJn5asqgAoByAsB4AsBqg0CR0LIDQHqDRMI44yQmvOykwMVIgwhBB3zdwf9iA4J2BMKiBQB0BUByhYCCgD4FgGAFwGyFwIYAboXAjgBshgJEgK-UBguIgEA0BgB6BgBwhkCCAE&gclid=EAIaIQobChMIl4eQmvOykwMVIgwhBB3zdwf9EAEYASAAEgLKDvD_BwE&num=1&cid=CAQS5AEABaugfU2ALhiaMrMYmvLKjXuNLDGabkxuS3CiMsWwT0sDq4mGKMtWticVU-vopOV6vF0sHEk_9acQGkILXDtIVjPhNQc3tZMceO0FoN5fbqDkuYsYOkZt3rpArPIeMEK2zR7lHZhh5XJEpMbC1hMRwYaqUjfSaA5LlYpgFgI4WABYSGCZMa0WuDathSJkvRkzoS_BlWHehgpk_px3o9gAP0S89zTZUnaXC4nvbPDFIIb08xTJ5h8imNVdyueY5q8b3U406ZH-ze-8cgwwyrCtY10_V-lOY-iUplkeEMXvjJLi0AIYAQ&sig=AOD64_3dvWTG4FAQUAvZbO1h1nCFAJcncQ&client=ca-pub-1677597403311019&rf=1&nb=0&adurl=https://ad.doubleclick.net/searchads/link/click%3F%26ds_a_cid%3D314100872%26ds_a_caid%3D23631284098%26ds_a_agid%3D199093795652%26ds_a_fiid%3D%26ds_a_lid%3D%26ds_a_extid%3D%26%26ds_e_adid%3D799229167651%26ds_e_matchtype%3Dcontent%26ds_e_device%3Dc%26ds_e_network%3Dd%26%26ds_url_v%3D2%26ds_dest_url%3Dhttps://monitor.lunio.ai/v3.0/template%3Faccid%3D16822%26kw%3D%26mt%3D%26nw%3Dd%26cpn%3D23631284098%26devi%3Dc%26devm%3Dgoogle%252Bchrome%26locp%3D2826%26loci%3D%26pl%3Dautomationexercise.com%26cr%3D799229167651%26adp%3D%26sadt%3D%26url%3Dhttps://uk.rs-online.com/web/c/%3FsearchTerm%3Dpower-infineon-0226_uk%26searchType%3DOffers%26cm_mmc%3DUK-DIS-_-Google-_-DTC_231_0326_NE-_-Infineon_Prospecting%26gclsrc%3Daw.ds%26gad_source%3D5%26gad_campaignid%3D23631284098
+              - link [ref=f11e12] [cursor=pointer]:
+                - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=Ccg_R946_adevLqKYhNEP8--d6A-6lZTchQHKx6_2yRXIxbLzvk0QASD9tJ6VAWC7BqAB07H5yAPIAQGpAic_HqQPYrY-qAMByAPLBKoE5gFP0HQPlWBbFBJOMTT7rbVMAmqoqn1YBIxvIWFHLImGH2EqjrfOGcMu4Xz_tU9BWmlATGzu06aOXnLkIkHDd-Ks20ueLFNvewPY6cjWwIpwBg-qfFZQPbf6AF7m5pY4t9mJjEOhmeVrKFW2_4w0VR002KxplBwCb0H2XaeLCyrDhHw0hlep-k-SkfDGUuCdu_8c8jLx0Ve-_cl9j7WV6LIVAsCS-5z2hnydf7krmNA_1NGgX80KBWqu50ARrY8x-GwYGghcmXlqjajQHFqqyE9Eml9sMo43sNmB6kpuPrHeiHlnPxpTM8AExPao1-UFiAWCj6OEWKAGLoAHuL3ElQGoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB5jFsQKoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCC8IgGEQARifAzIIioKAgICAgAg6DYBAgMCAgICAqIACqANIvf3BOli2oY6a87KTA5oJH2h0dHBzOi8vdWsucnMtb25saW5lLmNvbS93ZWIvYy-xCc6iMNJn5asqgAoByAsB4AsBqg0CR0LIDQHqDRMI44yQmvOykwMVIgwhBB3zdwf9iA4J2BMKiBQB0BUByhYCCgD4FgGAFwGyFwIYAboXAjgBshgJEgK-UBguIgEA0BgB6BgBwhkCCAE&gclid=EAIaIQobChMIl4eQmvOykwMVIgwhBB3zdwf9EAEYASAAEgLKDvD_BwE&num=1&cid=CAQS5AEABaugfU2ALhiaMrMYmvLKjXuNLDGabkxuS3CiMsWwT0sDq4mGKMtWticVU-vopOV6vF0sHEk_9acQGkILXDtIVjPhNQc3tZMceO0FoN5fbqDkuYsYOkZt3rpArPIeMEK2zR7lHZhh5XJEpMbC1hMRwYaqUjfSaA5LlYpgFgI4WABYSGCZMa0WuDathSJkvRkzoS_BlWHehgpk_px3o9gAP0S89zTZUnaXC4nvbPDFIIb08xTJ5h8imNVdyueY5q8b3U406ZH-ze-8cgwwyrCtY10_V-lOY-iUplkeEMXvjJLi0AIYAQ&sig=AOD64_3dvWTG4FAQUAvZbO1h1nCFAJcncQ&client=ca-pub-1677597403311019&rf=1&nb=19&adurl=https://ad.doubleclick.net/searchads/link/click%3F%26ds_a_cid%3D314100872%26ds_a_caid%3D23631284098%26ds_a_agid%3D199093795652%26ds_a_fiid%3D%26ds_a_lid%3D%26ds_a_extid%3D%26%26ds_e_adid%3D799229167651%26ds_e_matchtype%3Dcontent%26ds_e_device%3Dc%26ds_e_network%3Dd%26%26ds_url_v%3D2%26ds_dest_url%3Dhttps://monitor.lunio.ai/v3.0/template%3Faccid%3D16822%26kw%3D%26mt%3D%26nw%3Dd%26cpn%3D23631284098%26devi%3Dc%26devm%3Dgoogle%252Bchrome%26locp%3D2826%26loci%3D%26pl%3Dautomationexercise.com%26cr%3D799229167651%26adp%3D%26sadt%3D%26url%3Dhttps://uk.rs-online.com/web/c/%3FsearchTerm%3Dpower-infineon-0226_uk%26searchType%3DOffers%26cm_mmc%3DUK-DIS-_-Google-_-DTC_231_0326_NE-_-Infineon_Prospecting%26gclsrc%3Daw.ds%26gad_source%3D5%26gad_campaignid%3D23631284098
+                - img [ref=f11e13]
+            - link [ref=f11e14] [cursor=pointer]:
+              - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=Ccg_R946_adevLqKYhNEP8--d6A-6lZTchQHKx6_2yRXIxbLzvk0QASD9tJ6VAWC7BqAB07H5yAPIAQGpAic_HqQPYrY-qAMByAPLBKoE5gFP0HQPlWBbFBJOMTT7rbVMAmqoqn1YBIxvIWFHLImGH2EqjrfOGcMu4Xz_tU9BWmlATGzu06aOXnLkIkHDd-Ks20ueLFNvewPY6cjWwIpwBg-qfFZQPbf6AF7m5pY4t9mJjEOhmeVrKFW2_4w0VR002KxplBwCb0H2XaeLCyrDhHw0hlep-k-SkfDGUuCdu_8c8jLx0Ve-_cl9j7WV6LIVAsCS-5z2hnydf7krmNA_1NGgX80KBWqu50ARrY8x-GwYGghcmXlqjajQHFqqyE9Eml9sMo43sNmB6kpuPrHeiHlnPxpTM8AExPao1-UFiAWCj6OEWKAGLoAHuL3ElQGoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB5jFsQKoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCC8IgGEQARifAzIIioKAgICAgAg6DYBAgMCAgICAqIACqANIvf3BOli2oY6a87KTA5oJH2h0dHBzOi8vdWsucnMtb25saW5lLmNvbS93ZWIvYy-xCc6iMNJn5asqgAoByAsB4AsBqg0CR0LIDQHqDRMI44yQmvOykwMVIgwhBB3zdwf9iA4J2BMKiBQB0BUByhYCCgD4FgGAFwGyFwIYAboXAjgBshgJEgK-UBguIgEA0BgB6BgBwhkCCAE&gclid=EAIaIQobChMIl4eQmvOykwMVIgwhBB3zdwf9EAEYASAAEgLKDvD_BwE&num=1&cid=CAQS5AEABaugfU2ALhiaMrMYmvLKjXuNLDGabkxuS3CiMsWwT0sDq4mGKMtWticVU-vopOV6vF0sHEk_9acQGkILXDtIVjPhNQc3tZMceO0FoN5fbqDkuYsYOkZt3rpArPIeMEK2zR7lHZhh5XJEpMbC1hMRwYaqUjfSaA5LlYpgFgI4WABYSGCZMa0WuDathSJkvRkzoS_BlWHehgpk_px3o9gAP0S89zTZUnaXC4nvbPDFIIb08xTJ5h8imNVdyueY5q8b3U406ZH-ze-8cgwwyrCtY10_V-lOY-iUplkeEMXvjJLi0AIYAQ&sig=AOD64_3dvWTG4FAQUAvZbO1h1nCFAJcncQ&client=ca-pub-1677597403311019&rf=1&nb=9&adurl=https://ad.doubleclick.net/searchads/link/click%3F%26ds_a_cid%3D314100872%26ds_a_caid%3D23631284098%26ds_a_agid%3D199093795652%26ds_a_fiid%3D%26ds_a_lid%3D%26ds_a_extid%3D%26%26ds_e_adid%3D799229167651%26ds_e_matchtype%3Dcontent%26ds_e_device%3Dc%26ds_e_network%3Dd%26%26ds_url_v%3D2%26ds_dest_url%3Dhttps://monitor.lunio.ai/v3.0/template%3Faccid%3D16822%26kw%3D%26mt%3D%26nw%3Dd%26cpn%3D23631284098%26devi%3Dc%26devm%3Dgoogle%252Bchrome%26locp%3D2826%26loci%3D%26pl%3Dautomationexercise.com%26cr%3D799229167651%26adp%3D%26sadt%3D%26url%3Dhttps://uk.rs-online.com/web/c/%3FsearchTerm%3Dpower-infineon-0226_uk%26searchType%3DOffers%26cm_mmc%3DUK-DIS-_-Google-_-DTC_231_0326_NE-_-Infineon_Prospecting%26gclsrc%3Daw.ds%26gad_source%3D5%26gad_campaignid%3D23631284098
+              - img [ref=f11e15]
+            - link "Shop now" [ref=f11e16] [cursor=pointer]:
+              - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=Ccg_R946_adevLqKYhNEP8--d6A-6lZTchQHKx6_2yRXIxbLzvk0QASD9tJ6VAWC7BqAB07H5yAPIAQGpAic_HqQPYrY-qAMByAPLBKoE5gFP0HQPlWBbFBJOMTT7rbVMAmqoqn1YBIxvIWFHLImGH2EqjrfOGcMu4Xz_tU9BWmlATGzu06aOXnLkIkHDd-Ks20ueLFNvewPY6cjWwIpwBg-qfFZQPbf6AF7m5pY4t9mJjEOhmeVrKFW2_4w0VR002KxplBwCb0H2XaeLCyrDhHw0hlep-k-SkfDGUuCdu_8c8jLx0Ve-_cl9j7WV6LIVAsCS-5z2hnydf7krmNA_1NGgX80KBWqu50ARrY8x-GwYGghcmXlqjajQHFqqyE9Eml9sMo43sNmB6kpuPrHeiHlnPxpTM8AExPao1-UFiAWCj6OEWKAGLoAHuL3ElQGoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB5jFsQKoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCC8IgGEQARifAzIIioKAgICAgAg6DYBAgMCAgICAqIACqANIvf3BOli2oY6a87KTA5oJH2h0dHBzOi8vdWsucnMtb25saW5lLmNvbS93ZWIvYy-xCc6iMNJn5asqgAoByAsB4AsBqg0CR0LIDQHqDRMI44yQmvOykwMVIgwhBB3zdwf9iA4J2BMKiBQB0BUByhYCCgD4FgGAFwGyFwIYAboXAjgBshgJEgK-UBguIgEA0BgB6BgBwhkCCAE&gclid=EAIaIQobChMIl4eQmvOykwMVIgwhBB3zdwf9EAEYASAAEgLKDvD_BwE&num=1&cid=CAQS5AEABaugfU2ALhiaMrMYmvLKjXuNLDGabkxuS3CiMsWwT0sDq4mGKMtWticVU-vopOV6vF0sHEk_9acQGkILXDtIVjPhNQc3tZMceO0FoN5fbqDkuYsYOkZt3rpArPIeMEK2zR7lHZhh5XJEpMbC1hMRwYaqUjfSaA5LlYpgFgI4WABYSGCZMa0WuDathSJkvRkzoS_BlWHehgpk_px3o9gAP0S89zTZUnaXC4nvbPDFIIb08xTJ5h8imNVdyueY5q8b3U406ZH-ze-8cgwwyrCtY10_V-lOY-iUplkeEMXvjJLi0AIYAQ&sig=AOD64_3dvWTG4FAQUAvZbO1h1nCFAJcncQ&client=ca-pub-1677597403311019&rf=1&nb=8&adurl=https://ad.doubleclick.net/searchads/link/click%3F%26ds_a_cid%3D314100872%26ds_a_caid%3D23631284098%26ds_a_agid%3D199093795652%26ds_a_fiid%3D%26ds_a_lid%3D%26ds_a_extid%3D%26%26ds_e_adid%3D799229167651%26ds_e_matchtype%3Dcontent%26ds_e_device%3Dc%26ds_e_network%3Dd%26%26ds_url_v%3D2%26ds_dest_url%3Dhttps://monitor.lunio.ai/v3.0/template%3Faccid%3D16822%26kw%3D%26mt%3D%26nw%3Dd%26cpn%3D23631284098%26devi%3Dc%26devm%3Dgoogle%252Bchrome%26locp%3D2826%26loci%3D%26pl%3Dautomationexercise.com%26cr%3D799229167651%26adp%3D%26sadt%3D%26url%3Dhttps://uk.rs-online.com/web/c/%3FsearchTerm%3Dpower-infineon-0226_uk%26searchType%3DOffers%26cm_mmc%3DUK-DIS-_-Google-_-DTC_231_0326_NE-_-Infineon_Prospecting%26gclsrc%3Daw.ds%26gad_source%3D5%26gad_campaignid%3D23631284098
+              - generic [ref=f11e17]:
+                - generic [ref=f11e18]: Shop now
+                - generic [ref=f11e19]:
+                  - img [ref=f11e20]
+                  - img [ref=f11e22]
+          - img [ref=f11e27] [cursor=pointer]
+          - button [ref=f11e30] [cursor=pointer]:
+            - img [ref=f11e31]
+          - iframe
+  - contentinfo [ref=e126]:
+    - generic [ref=e131]:
+      - heading "Subscription" [level=2] [ref=e132]
+      - generic [ref=e133]:
+        - textbox "Your email address" [ref=e134]
+        - button "" [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: 
+        - paragraph [ref=e137]:
+          - text: Get the most recent updates from
+          - text: our site and be updated your self...
+    - paragraph [ref=e141]: Copyright © 2021 All rights reserved
+  - link "" [ref=e142] [cursor=pointer]:
+    - /url: "#top"
+    - generic [ref=e143]: 
+  - generic:
+    - insertion:
+      - generic:
+        - iframe
+  - insertion [ref=e144]:
+    - iframe [ref=e146]:
+      - generic [active] [ref=f14e1]:
+        - generic [ref=f14e7]:
+          - generic [ref=f14e8]:
+            - generic "FUS Industrial" [ref=f14e9]:
+              - link "In Stock & Ready To Ship" [ref=f14e10] [cursor=pointer]:
+                - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=CzX0o946_aayxB6CPpeEPsdbO8Qe49uPPfuuz1IXrE8yyz-79DhABIP20npUBYLsGoAGuyeHpKMgBAakCJz8epA9itj6oAwHIA8MEqgT8AU_QY2rzEm8REsM3seP5m-mWg06MxtX5et0fty-9PO-iB5QQJfpINxJ-f3PJAbbqqbzuncJ-tLj43nyh06NsBNuFXoIbT4SEIZOFaW4AgUgsEMJHGlfyYcJRKqPtH9_J8v2jLhWXwwv6qWYAF5vlpq-wud8cytvqrUktWDDvvZka91XO6djq0uHtRzT2K-5CSj7xMm0mL9hEnm5d7Tn8Kx6j0rdLdnoeTTFehuFrrmqx1JeMls6t5iMfPdZys5GCyQ6qasighC9yqtQIUN8ZR_YpUmKyo_cuG_uwuSCx1TrDK1Ctyka-wZVODKzZoVwzipI8F1RYqVKVEYNHisAEsfyun5IFiAWF5_rfUaAGZoAHroGyyQOoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCDEIkeGAUBABGJ8DMgiri4CAgICACjoNgECAwICAgICogAKoA0i9_cE6WPbg6JnzspMDsQmMS7QK7RPmJYAKAZgLAcgLAaoNAkdCyA0B6g0TCMSO6ZnzspMDFaBHKQYdMaszfvANAogOCdgTCogUMtAVAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICmGkYZiIBANAYAcIZAggB&ae=1&gclid=EAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE&num=1&sig=AOD64_3B9w9Zj488W3KDbPDT9tTSFnox4A&client=ca-pub-1677597403311019&rf=1&nb=0&adurl=https://fus-industrial.com/%3Fgad_source%3D5%26gad_campaignid%3D21944513413%26gclid%3DEAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE
+                - text: In Stock &
+                - text: Ready To
+                - text: Ship
+            - generic "FUS Industrial" [ref=f14e11]:
+              - link "FUS Industrial - Automation Parts and Industrial Controls" [ref=f14e12] [cursor=pointer]:
+                - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=CzX0o946_aayxB6CPpeEPsdbO8Qe49uPPfuuz1IXrE8yyz-79DhABIP20npUBYLsGoAGuyeHpKMgBAakCJz8epA9itj6oAwHIA8MEqgT8AU_QY2rzEm8REsM3seP5m-mWg06MxtX5et0fty-9PO-iB5QQJfpINxJ-f3PJAbbqqbzuncJ-tLj43nyh06NsBNuFXoIbT4SEIZOFaW4AgUgsEMJHGlfyYcJRKqPtH9_J8v2jLhWXwwv6qWYAF5vlpq-wud8cytvqrUktWDDvvZka91XO6djq0uHtRzT2K-5CSj7xMm0mL9hEnm5d7Tn8Kx6j0rdLdnoeTTFehuFrrmqx1JeMls6t5iMfPdZys5GCyQ6qasighC9yqtQIUN8ZR_YpUmKyo_cuG_uwuSCx1TrDK1Ctyka-wZVODKzZoVwzipI8F1RYqVKVEYNHisAEsfyun5IFiAWF5_rfUaAGZoAHroGyyQOoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCDEIkeGAUBABGJ8DMgiri4CAgICACjoNgECAwICAgICogAKoA0i9_cE6WPbg6JnzspMDsQmMS7QK7RPmJYAKAZgLAcgLAaoNAkdCyA0B6g0TCMSO6ZnzspMDFaBHKQYdMaszfvANAogOCdgTCogUMtAVAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICmGkYZiIBANAYAcIZAggB&ae=1&gclid=EAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE&num=1&sig=AOD64_3B9w9Zj488W3KDbPDT9tTSFnox4A&client=ca-pub-1677597403311019&rf=1&nb=0&adurl=https://fus-industrial.com/%3Fgad_source%3D5%26gad_campaignid%3D21944513413%26gclid%3DEAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE
+                - text: FUS Industrial -
+                - text: Automation Parts
+                - text: and Industrial
+                - text: Controls
+            - link "FUS Industrial offers a wide range of Siemens products." [ref=f14e14] [cursor=pointer]:
+              - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=CzX0o946_aayxB6CPpeEPsdbO8Qe49uPPfuuz1IXrE8yyz-79DhABIP20npUBYLsGoAGuyeHpKMgBAakCJz8epA9itj6oAwHIA8MEqgT8AU_QY2rzEm8REsM3seP5m-mWg06MxtX5et0fty-9PO-iB5QQJfpINxJ-f3PJAbbqqbzuncJ-tLj43nyh06NsBNuFXoIbT4SEIZOFaW4AgUgsEMJHGlfyYcJRKqPtH9_J8v2jLhWXwwv6qWYAF5vlpq-wud8cytvqrUktWDDvvZka91XO6djq0uHtRzT2K-5CSj7xMm0mL9hEnm5d7Tn8Kx6j0rdLdnoeTTFehuFrrmqx1JeMls6t5iMfPdZys5GCyQ6qasighC9yqtQIUN8ZR_YpUmKyo_cuG_uwuSCx1TrDK1Ctyka-wZVODKzZoVwzipI8F1RYqVKVEYNHisAEsfyun5IFiAWF5_rfUaAGZoAHroGyyQOoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCDEIkeGAUBABGJ8DMgiri4CAgICACjoNgECAwICAgICogAKoA0i9_cE6WPbg6JnzspMDsQmMS7QK7RPmJYAKAZgLAcgLAaoNAkdCyA0B6g0TCMSO6ZnzspMDFaBHKQYdMaszfvANAogOCdgTCogUMtAVAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICmGkYZiIBANAYAcIZAggB&ae=1&gclid=EAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE&num=1&sig=AOD64_3B9w9Zj488W3KDbPDT9tTSFnox4A&client=ca-pub-1677597403311019&rf=1&nb=7&adurl=https://fus-industrial.com/%3Fgad_source%3D5%26gad_campaignid%3D21944513413%26gclid%3DEAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE
+              - text: FUS Industrial
+              - text: offers a wide
+              - text: range of Siemens
+              - text: products.
+            - generic "FUS Industrial" [ref=f14e15]:
+              - link "FUS Industrial" [ref=f14e16] [cursor=pointer]:
+                - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=CzX0o946_aayxB6CPpeEPsdbO8Qe49uPPfuuz1IXrE8yyz-79DhABIP20npUBYLsGoAGuyeHpKMgBAakCJz8epA9itj6oAwHIA8MEqgT8AU_QY2rzEm8REsM3seP5m-mWg06MxtX5et0fty-9PO-iB5QQJfpINxJ-f3PJAbbqqbzuncJ-tLj43nyh06NsBNuFXoIbT4SEIZOFaW4AgUgsEMJHGlfyYcJRKqPtH9_J8v2jLhWXwwv6qWYAF5vlpq-wud8cytvqrUktWDDvvZka91XO6djq0uHtRzT2K-5CSj7xMm0mL9hEnm5d7Tn8Kx6j0rdLdnoeTTFehuFrrmqx1JeMls6t5iMfPdZys5GCyQ6qasighC9yqtQIUN8ZR_YpUmKyo_cuG_uwuSCx1TrDK1Ctyka-wZVODKzZoVwzipI8F1RYqVKVEYNHisAEsfyun5IFiAWF5_rfUaAGZoAHroGyyQOoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCDEIkeGAUBABGJ8DMgiri4CAgICACjoNgECAwICAgICogAKoA0i9_cE6WPbg6JnzspMDsQmMS7QK7RPmJYAKAZgLAcgLAaoNAkdCyA0B6g0TCMSO6ZnzspMDFaBHKQYdMaszfvANAogOCdgTCogUMtAVAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICmGkYZiIBANAYAcIZAggB&ae=1&gclid=EAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE&num=1&sig=AOD64_3B9w9Zj488W3KDbPDT9tTSFnox4A&client=ca-pub-1677597403311019&rf=1&nb=1&adurl=https://fus-industrial.com/%3Fgad_source%3D5%26gad_campaignid%3D21944513413%26gclid%3DEAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE
+          - link "OPEN" [ref=f14e19] [cursor=pointer]:
+            - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=CzX0o946_aayxB6CPpeEPsdbO8Qe49uPPfuuz1IXrE8yyz-79DhABIP20npUBYLsGoAGuyeHpKMgBAakCJz8epA9itj6oAwHIA8MEqgT8AU_QY2rzEm8REsM3seP5m-mWg06MxtX5et0fty-9PO-iB5QQJfpINxJ-f3PJAbbqqbzuncJ-tLj43nyh06NsBNuFXoIbT4SEIZOFaW4AgUgsEMJHGlfyYcJRKqPtH9_J8v2jLhWXwwv6qWYAF5vlpq-wud8cytvqrUktWDDvvZka91XO6djq0uHtRzT2K-5CSj7xMm0mL9hEnm5d7Tn8Kx6j0rdLdnoeTTFehuFrrmqx1JeMls6t5iMfPdZys5GCyQ6qasighC9yqtQIUN8ZR_YpUmKyo_cuG_uwuSCx1TrDK1Ctyka-wZVODKzZoVwzipI8F1RYqVKVEYNHisAEsfyun5IFiAWF5_rfUaAGZoAHroGyyQOoB6fMsQKoB6a-G6gHzM6xAqgH89EbqAeW2BuoB6qbsQKoB47OG6gHk9gbqAfw4BuoB-6WsQKoB_6esQKoB6--sQKoB9XJG6gH2baxAqgHmgaoB_-esQKoB9-fsQKoB_jCsQKoB_vCsQLYBwHSCDEIkeGAUBABGJ8DMgiri4CAgICACjoNgECAwICAgICogAKoA0i9_cE6WPbg6JnzspMDsQmMS7QK7RPmJYAKAZgLAcgLAaoNAkdCyA0B6g0TCMSO6ZnzspMDFaBHKQYdMaszfvANAogOCdgTCogUMtAVAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICmGkYZiIBANAYAcIZAggB&ae=1&gclid=EAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE&num=1&sig=AOD64_3B9w9Zj488W3KDbPDT9tTSFnox4A&client=ca-pub-1677597403311019&rf=1&nb=8&adurl=https://fus-industrial.com/%3Fgad_source%3D5%26gad_campaignid%3D21944513413%26gclid%3DEAIaIQobChMI7IjpmfOykwMVoEcpBh0xqzN-EAEYASAAEgIGWfD_BwE
+            - generic [ref=f14e23]:
+              - generic [ref=f14e24]: OPEN
+              - img [ref=f14e25]
+        - img [ref=f14e30] [cursor=pointer]
+        - button [ref=f14e33] [cursor=pointer]:
+          - img [ref=f14e34]
+        - iframe
+    - img [ref=e148]
+  - insertion [ref=e154]:
+    - iframe [ref=e156]:
+      - generic [active] [ref=f15e1]:
+        - generic [ref=f15e3]:
+          - link:
+            - /url: https://googleads.g.doubleclick.net/aclk?sa=l&ai=COV6m946_aa6xB6CPpeEPsdbO8QfPls_BhQGgltj42hWMi4WeCxABIP20npUBYLsGoAH24_mTPsgBAqkCJz8epA9itj6oAwHIA8kEqgToAU_QM1eLtIxd3YYCPU__k4CBIfnXSoX7Pdk1TzjnQCY9b6StJCrhLf6FsB4Um7C_uu00_dAT7rj8ru9MRjfQ1tuKzAPca8uEHRZJhZ1W3b0vmyz5gOn2uU6Ka71Me95qE_eXD6MKRFZkgQZO84rANMsPhR48imRNQHdmFsBDwP9Tca1SCmItWtbWSUgWKgkQv0EUZ0LiPIS_EVNpvFCMEaK1bpQ327_x9lQvmeaDje4wjO740sj-AlGR84j99q4ZfvhhPA_1MmVYRWYY3WfWcPHbmdFzIzvswmGnsxM6PU7keX7BzVCAGC7ABOXnk9vQBYgFpdHy8VegBgKAB_abyvMYqAenzLECqAfi2LECqAemvhuoB8zOsQKoB_PRG6gHltgbqAeqm7ECqAeOzhuoB5PYG6gH8OAbqAfulrECqAf-nrECqAevvrECqAfVyRuoB9m2sQKoB5oGqAf_nrECqAffn7ECqAf4wrECqAf7wrECqAfCyLEC2AcB0ggxCJHhgFAQARifAzIIq4uAgICAgAo6DYBAgMCAgICAqIACqANIvf3BOlj24OiZ87KTA5oJKWh0dHBzOi8vd3d3LmFyZ29zLmNvLnVrL3NlYXJjaC9lY2hvLXNwb3QvsQmO3ToOtKqoLIAKAcgLAeALAaIMA5ABAaoNAkdCyA0B6g0TCMWO6ZnzspMDFaBHKQYdMaszfogOCdgTA9AVAZgWAcoWAgoA-BYBgBcBshcCGAG6FwI4AbIYCRICr1MYAiIBANAYAbIZAS_CGQIIAQ&gclid=EAIaIQobChMI7ojpmfOykwMVoEcpBh0xqzN-EAEYASAAEgICAvD_BwE&num=1&sig=AOD64_0YXU-LPHvQj7si7JAZ9zXFOyZlog&client=ca-pub-1677597403311019&rf=2&nb=2&adurl=https://ad.doubleclick.net/ddm/trackclk/N1121103.4315430GOOGLEADS-GDN/B35282826.440443984%3Bdc_trk_aid%3D634127798%3Bdc_trk_cid%3D250302002%3Bdc_lat%3D%3Bdc_rdid%3D%3Btag_for_child_directed_treatment%3D%3Btfua%3D%3Bgdpr%3D%24%7BGDPR%7D%3Bgdpr_consent%3D%24%7BGDPR_CONSENT_755%7D%3Bltd%3D%3Bdc_tdv%3D1%3Bdc_transparent%3D1%3B%3Fhttps://www.argos.co.uk/search/echo-spot/%3Fcmpid%3DDP_DN_776-1_ACS_AW_GN_PS_ARG_CM_440443984_250302002%26utm_source%3Ddn%26utm_medium%3Ddisplay%26utm_campaign%3D35282826%26utm_content%3Dgn%26utm_custom3%3Dte%26utm_custom1%3Dacs%26utm_custom2%3Dps%26utm_custom6%3D776-1%26gad_source%3D5%26gad_campaignid%3D23592741029
+          - img [ref=f15e7] [cursor=pointer]
+          - button [ref=f15e10] [cursor=pointer]:
+            - img [ref=f15e11]
+        - iframe
+    - img [ref=e158]
+```
