@@ -49,7 +49,25 @@ export class AutomationExerciseSignupLoginPage {
 
     await nameInput.fill(params.name);
     await signupEmail.fill(email);
-    await this.signupButton().click();
+
+    const signupButton = this.signupButton();
+
+    // Cookie consent can appear late and intercept the click; retry a couple of times.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await this.dismissCookieConsentIfPresent();
+      try {
+        await signupButton.click({ timeout: 5000 });
+        break;
+      } catch (error) {
+        const overlayVisible = await this.page
+          .locator('.fc-dialog-overlay, .fc-consent-root, .fc-dialog')
+          .first()
+          .isVisible({ timeout: 1000 })
+          .catch(() => false);
+
+        if (!overlayVisible || attempt === 2) throw error;
+      }
+    }
 
     await this.assertEnterAccountInformationVisible();
   }
