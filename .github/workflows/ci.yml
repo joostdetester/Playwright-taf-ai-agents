@@ -52,7 +52,7 @@ jobs:
           npm run bdd:dummy
       # Example: to enable MCP servers and inject secrets from GitHub Secrets,
       # uncomment and adjust the following env mapping. Keep MCP disabled by
-      # default to avoid running local-only agents in CI.
+      # default to avoid running local-only agents in CI..
       # - name: Run with MCP (example)
       #   env:
       #     BASE_URL: https://rahulshettyacademy.com
