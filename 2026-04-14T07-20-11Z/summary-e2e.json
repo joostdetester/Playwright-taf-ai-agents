@@ -1,0 +1,21 @@
+{
+  "suite": "e2e",
+  "total": 11,
+  "passed": 3,
+  "failed": 8,
+  "skipped": 0,
+  "failedTests": [
+    "API returns the same books as the database for author \"Rahul Shetty\"",
+    "API returns the same books as the database for author \"John Doe\"",
+    "Add Pet, Get Pet, Delete Pet and confirm not found",
+    "Add Pet and Get Pet by id",
+    "user places an order for two products",
+    "user completes the practice page flow",
+    "Add Pet and Update Pet then Get Pet by id",
+    "user logs in with an existing (persisted) account"
+  ],
+  "status": "FAILED",
+  "start": "2026-04-14T07:18:40.217Z",
+  "stop": "2026-04-14T07:19:55.023Z",
+  "durationMs": 74806
+}
