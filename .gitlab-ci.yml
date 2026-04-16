@@ -85,6 +85,13 @@ cache:
   extends: .suite_with_mysql
   script:
     - |
+      # GitLab UI/group variables take precedence over YAML variables and can
+      # override MYSQL_USER/MYSQL_PASSWORD with stale developer credentials.
+      # Force the DB connection to use root (always present in the mysql:8.0
+      # service container) so the test run is never blocked by credential conflicts.
+      export MYSQL_USER=root
+      export MYSQL_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+
       # Allow per-job override (used for Suite=all fan-out).
       SUITE="${SUT:-$[[ inputs.Suite ]]}"
       CUSTOM_TAGS="$[[ inputs.Custom_tags ]]"
