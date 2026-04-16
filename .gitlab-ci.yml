@@ -200,12 +200,19 @@ report:allure:bookstore:
     - npm --version
     - |
       # Allure CLI requires Java. Playwright image typically doesn't include it.
+      # Uses Eclipse Temurin tarball to avoid dependency on archive.ubuntu.com.
       if command -v java >/dev/null 2>&1; then
         java -version
       else
-        echo "Java not found; installing OpenJDK...";
-        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
-          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        echo "Java not found; installing Eclipse Temurin 17 JRE..."
+        curl -fsSL \
+          "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
+          -o /tmp/jre.tar.gz
+        mkdir -p /opt/temurin
+        tar -xzf /tmp/jre.tar.gz -C /opt/temurin --strip-components=1
+        rm -f /tmp/jre.tar.gz
+        export JAVA_HOME=/opt/temurin
+        export PATH="/opt/temurin/bin:${PATH}"
         java -version
       fi
     - npm ci --prefer-offline --no-audit --progress=false
@@ -285,12 +292,19 @@ report:allure:greenkart:
     - npm --version
     - |
       # Allure CLI requires Java. Playwright image typically doesn't include it.
+      # Uses Eclipse Temurin tarball to avoid dependency on archive.ubuntu.com.
       if command -v java >/dev/null 2>&1; then
         java -version
       else
-        echo "Java not found; installing OpenJDK...";
-        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
-          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        echo "Java not found; installing Eclipse Temurin 17 JRE..."
+        curl -fsSL \
+          "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
+          -o /tmp/jre.tar.gz
+        mkdir -p /opt/temurin
+        tar -xzf /tmp/jre.tar.gz -C /opt/temurin --strip-components=1
+        rm -f /tmp/jre.tar.gz
+        export JAVA_HOME=/opt/temurin
+        export PATH="/opt/temurin/bin:${PATH}"
         java -version
       fi
     - npm ci --prefer-offline --no-audit --progress=false
@@ -362,12 +376,19 @@ report:allure:letsshop:
     - node --version
     - npm --version
     - |
+      # Uses Eclipse Temurin tarball to avoid dependency on archive.ubuntu.com.
       if command -v java >/dev/null 2>&1; then
         java -version
       else
-        echo "Java not found; installing OpenJDK...";
-        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
-          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        echo "Java not found; installing Eclipse Temurin 17 JRE..."
+        curl -fsSL \
+          "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
+          -o /tmp/jre.tar.gz
+        mkdir -p /opt/temurin
+        tar -xzf /tmp/jre.tar.gz -C /opt/temurin --strip-components=1
+        rm -f /tmp/jre.tar.gz
+        export JAVA_HOME=/opt/temurin
+        export PATH="/opt/temurin/bin:${PATH}"
         java -version
       fi
     - npm ci --prefer-offline --no-audit --progress=false
@@ -439,12 +460,19 @@ report:allure:petstore:
     - node --version
     - npm --version
     - |
+      # Uses Eclipse Temurin tarball to avoid dependency on archive.ubuntu.com.
       if command -v java >/dev/null 2>&1; then
         java -version
       else
-        echo "Java not found; installing OpenJDK...";
-        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
-          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        echo "Java not found; installing Eclipse Temurin 17 JRE..."
+        curl -fsSL \
+          "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
+          -o /tmp/jre.tar.gz
+        mkdir -p /opt/temurin
+        tar -xzf /tmp/jre.tar.gz -C /opt/temurin --strip-components=1
+        rm -f /tmp/jre.tar.gz
+        export JAVA_HOME=/opt/temurin
+        export PATH="/opt/temurin/bin:${PATH}"
         java -version
       fi
 
@@ -466,12 +494,19 @@ report:allure:automationexercise:
     - node --version
     - npm --version
     - |
+      # Uses Eclipse Temurin tarball to avoid dependency on archive.ubuntu.com.
       if command -v java >/dev/null 2>&1; then
         java -version
       else
-        echo "Java not found; installing OpenJDK...";
-        (sudo apt-get update && sudo apt-get install -y --no-install-recommends openjdk-17-jre-headless) \
-          || (apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless)
+        echo "Java not found; installing Eclipse Temurin 17 JRE..."
+        curl -fsSL \
+          "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jre/hotspot/normal/eclipse" \
+          -o /tmp/jre.tar.gz
+        mkdir -p /opt/temurin
+        tar -xzf /tmp/jre.tar.gz -C /opt/temurin --strip-components=1
+        rm -f /tmp/jre.tar.gz
+        export JAVA_HOME=/opt/temurin
+        export PATH="/opt/temurin/bin:${PATH}"
         java -version
       fi
     - npm ci --prefer-offline --no-audit --progress=false

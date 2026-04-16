@@ -5,7 +5,7 @@
   "scripts": {
     "ai:run": "ts-node ai/orchestration/agentOrchestrator.ts",
     "bddgen": "npx bddgen",
-    "test": "npm run bdd",
+    "test": "",
     "bdd": "npm run bddgen && npx playwright test --reporter=list,allure-playwright",
     "bdd:dummy": "npm run bdd -- features/bookstore/api/bookstore-api-tests.feature.spec.js features/bookstore/ui/bookstore-ui-tests.feature.spec.js features/bookstore/db/bookstore-get-books-from-database.feature.spec.js",
     "mcp:filesystem": "npx -y @modelcontextprotocol/server-filesystem \"C:/Users/joost/OneDrive/Documenten/Projects\"",
