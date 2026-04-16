@@ -1,3 +1,3 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","13029","user places an order for two products","","2026-04-16","passed","2026-04-16","shopping cart end-to-end tests","features/letsshop/e2e/shopping-cart-e2e-tests.feature.spec.js","",""
-"","11586","user completes the practice page flow","","2026-04-16","passed","2026-04-16","Practice page end-to-end tests","features/letsshop/e2e/practice-page-e2e-tests.feature.spec.js","",""
+"","12581","user places an order for two products","","2026-04-16","passed","2026-04-16","shopping cart end-to-end tests","features/letsshop/e2e/shopping-cart-e2e-tests.feature.spec.js","",""
+"","11153","user completes the practice page flow","","2026-04-16","passed","2026-04-16","Practice page end-to-end tests","features/letsshop/e2e/practice-page-e2e-tests.feature.spec.js","",""
