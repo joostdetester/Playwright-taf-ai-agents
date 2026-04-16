@@ -7,6 +7,15 @@ export class AutomationExerciseHomePage {
     const normalized = String(baseUrl ?? '').trim();
     const targetBaseUrl = /automationexercise\.com/i.test(normalized) ? normalized : 'https://automationexercise.com';
     await this.page.goto(targetBaseUrl, { waitUntil: 'domcontentloaded' });
+
+    // The Funding Choices consent popup loads asynchronously and can appear at any point,
+    // including after dismissCookieConsentIfPresent() has already run (causing flakiness).
+    // addLocatorHandler fires reactively whenever the button is visible, before any
+    // Playwright action that would otherwise be blocked by the overlay.
+    const consentButton = this.page.getByRole('button', { name: 'Consent' });
+    await this.page.addLocatorHandler(consentButton, async () => {
+      await consentButton.click({ timeout: 5_000 }).catch(() => {});
+    });
   }
 
   async assertLoaded() {
