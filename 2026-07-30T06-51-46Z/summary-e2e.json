@@ -1,0 +1,19 @@
+{
+  "suite": "e2e",
+  "total": 11,
+  "passed": 5,
+  "failed": 6,
+  "skipped": 0,
+  "failedTests": [
+    "API returns the same books as the database for author \"Rahul Shetty\"",
+    "user places an order for two products",
+    "user logs in with an existing (persisted) account",
+    "API returns the same books as the database for author \"John Doe\"",
+    "user registers a new account and is logged in",
+    "user completes the practice page flow"
+  ],
+  "status": "FAILED",
+  "start": "2026-07-30T06:49:58.831Z",
+  "stop": "2026-07-30T06:51:19.663Z",
+  "durationMs": 80832
+}
